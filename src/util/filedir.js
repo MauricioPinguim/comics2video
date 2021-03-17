@@ -16,7 +16,12 @@ const entryExists = (entry) => fs.existsSync(entry);
 
 const isFolder = (entry) => fs.lstatSync(entry).isDirectory();
 
-const isFile = (entry) => fs.lstatSync(entry).isFile();
+const isFile = (entry) => {
+    if (fs.lstatSync(entry).isFile()) {
+        // File .gitkeep added just to git keep track of folder comics_files
+        return !entry.toLowerCase().includes('.gitkeep');
+    }
+}
 
 const getFileExtension = (file) => path.extname(file).toLowerCase();
 

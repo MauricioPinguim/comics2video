@@ -20,8 +20,8 @@ That will also allow the reading by **people with disabilities**.
 ```sh
 npm install
 ```
-###Using as a standalone app
-Place the Comic Book files in the **comics_files folder** and run:
+### Using as a standalone app
+Place the Comic Book files in the **comics_files** folder and run:
 ```sh
 node comics2video
 ```
@@ -36,8 +36,12 @@ Or the folder containing the comic book files:
 node comics2video ./pathWithComicBooks
 ```
 
-###Using as a Node.js module
-Make sure to install the comics2video dependencies first, then use:
+### Using as a Node.js module
+Fisrt run a **npm install** in the comics2video root folder. After that, in your project root folder:
+```sh
+npm install ./pathToComics2video
+```
+Then use:
 ```javascript
 const comics2video = require('comics2video');
 
@@ -46,20 +50,22 @@ const source = './path/myComicBook.cbr';
 await comics2video.process(source);
 ```
 
-###Using the generated files
+### Using the generated files
 For each comic book processed, a folder with the same name will be created, containing:
-- The video file in .MP4 format. Just open it in the TV/Video player of your choice, like a regular video
-- A subfolder named 'Images' with all the frames in .JPG format. That can also be opened in modern TVs, advance each frame/page manually using the remote control
+- The video file in .MP4 format
+	- Just open it in the TV/Video player of your choice, like a regular video
+- A subfolder named 'Images' with all the frames in .JPG format
+	- That can also be opened in modern TVs, advance each frame/page manually using the remote control
 
 ## Project comics2video
 
 ### Dependencies
-- Extraction from .CBR/.RAR ([unrar-promise](https://www.npmjs.com/package/unrar-promise)), .CBZ/.ZIP ([win-7zip](https://www.npmjs.com/package/win-7zip)+[cross-zip](https://www.npmjs.com/package/cross-unzip)) and PDF files ([pdfjs-dist](https://www.npmjs.com/package/pdfjs-dist))
+- Extraction from CBR/RAR ([unrar-promise](https://www.npmjs.com/package/unrar-promise)), CBZ/ZIP ([win-7zip](https://www.npmjs.com/package/win-7zip)+[cross-zip](https://www.npmjs.com/package/cross-unzip)) and PDF files ([pdfjs-dist](https://www.npmjs.com/package/pdfjs-dist))
 - Image processing: [sharp](https://www.npmjs.com/package/sharp)
 - OCR: [tesseract.js](https://www.npmjs.com/package/tesseract.js)
 - Video generation: [ffmpeg-static](ffmpeg-static)
 
 ### Next steps
-- Map and document the User Parametes
-- Simplified text-based UI for non-developers users to set the Parameters
+- Map and document the User Parameters
+- Simplified text-based UI to set User Parameters (for non-developers users)
 - Make it available as a module at [npmjs.com](https://www.npmjs.com)
