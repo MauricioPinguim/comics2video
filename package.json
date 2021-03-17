@@ -1,0 +1,53 @@
+{
+    "author": {
+        "name": "Maurício Antunes Oliveira",
+        "email": "mauricio_pinguim@hotmail.com"
+    },
+    "bugs": {
+        "url": "https://github.com/MauricioPinguim/comics2video/issues"
+    },
+    "dependencies": {
+        "canvas": "^2.7.0",
+        "chalk": "^4.1.0",
+        "cross-unzip": "^0.2.1",
+        "deltree": "^1.2.8",
+        "ffmpeg-static": "^4.2.7",
+        "has-flag": "^4.0.0",
+        "pdfjs-dist": "^2.6.347",
+        "sharp": "^0.27.2",
+        "spawn-please": "^1.0.0",
+        "tesseract.js": "^2.1.4",
+        "unrar-promise": "^2.0.1",
+        "win-7zip": "^0.1.1"
+    },
+    "deprecated": false,
+    "description": "Converts Comic Book files to videos to be watched on TV/Video players",
+    "homepage": "https://github.com/MauricioPinguim/comics2video",
+    "keywords": [
+        "comics",
+        "comic",
+        "book",
+        "converter",
+        "video",
+        "slideshow",
+        "image-processing",
+        "ocr",
+        "accessibility",
+        "comics-reader",
+        "cbr",
+        "rar",
+        "cbz",
+        "zip",
+        "pdf"
+    ],
+    "license": "Apache-2.0",
+    "main": "./src/index.js",
+    "name": "comics2video",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MauricioPinguim/comics2video.git"
+    },
+    "scripts": {},
+    "title": "comic2video",
+    "version": "0.1.0"
+}
