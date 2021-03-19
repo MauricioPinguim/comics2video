@@ -23,7 +23,7 @@ npm install
 ## Usage
 
 ### Option A: Drag-and-drop comic book files
-Select the Comic Book file and drag-and-drop it on the batch file located in the root folder of comics2video:
+(Windows only) Select the Comic Book file and drag-and-drop it on the batch file located in the root folder of comics2video:
 
 > 🗋 drop_comics_here.bat
 
@@ -55,9 +55,25 @@ Then use:
 const comics2video = require('comics2video');
 
 const source = './path/myComicBook.cbr';
+const userParameters = {
+	generateVideo : true,
+	ocrEnabled: true,
+    contentProfile: 'complex',
+    readingSpeed: 'normal',
+    logLevel: 5
+}
 
-await comics2video.process(source);
+await comics2video.process(source, userParameters);
 ```
+
+### User Parameters
+| Name | How to set | Default | Description |
+| --- | --- | --- | --- |
+| generateVideo | boolean | true | If false, only the image frames will be generated |
+| ocrEnabled | boolean | true | If false, disables OCR and uses a fixed duration in all frames
+| contentProfile | string:<br/>'simple', 'complex' | 'complex' | Changes how OCR calculates each frame duration:<br/>• 'simple' : Ideal for Comic books for kids, art with few details<br />• 'complex' : Ideal for Superhero or Comics with detailed art
+| readingSpeed | string:<br/> 'slow', 'normal', 'fast' | 'normal' | Also changes how OCR calculates duration:<br/>• 'slow': Ideal for Kids or reading in foreign language<br />• 'normal' : Normal reading speed<br />• 'fast' : For speed reading
+| logLevel | number<br />1, 2, 3, 4, 5 | 5 | From 1 to 5, how much information will be printed in the log:<br/>1 = Basic information, 5 = Detailed log
 
 ### Using the generated files
 For each comic book processed, a folder with the same name will be created, containing:
@@ -75,6 +91,8 @@ For each comic book processed, a folder with the same name will be created, cont
 - Video generation: [ffmpeg-static](ffmpeg-static)
 
 ### Next steps
-- Map and document the User Parameters
 - Simplified text-based UI to set User Parameters (for non-developers users)
 - Make it available as a module at [npmjs.com](https://www.npmjs.com)
+
+### Contact
+Maurício Antunes Oliveira: ✉️ [mauricio_pinguim@hotmail.com](mailto:mauricio_pinguim@hotmail.com?subject=comics2video)

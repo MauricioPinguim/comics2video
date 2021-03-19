@@ -34,7 +34,7 @@ const readingSpeeds = {
     },
     fast: {
         name: 'fast',
-        durationMultiplier: 0.3,
+        durationMultiplier: 0.5,
         countdownStart: 3
     }
 }

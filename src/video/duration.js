@@ -11,8 +11,8 @@ const getDurationDefinition = () => {
     const countdownStart = params.userParams.readingSpeed.countdownStart;
 
     durationDefinition.defaultDuration = Math.round(durationDefinition.defaultDuration * multiplier);
-    durationDefinition.ocrTextLengthMinDuration = durationDefinition.ocrTextLengthMinDuration * multiplier;
-    durationDefinition.ocrTextLengthMaxDuration = durationDefinition.ocrTextLengthMaxDuration * multiplier;
+    durationDefinition.ocrTextLengthMinDuration = Math.round(durationDefinition.ocrTextLengthMinDuration * multiplier);
+    durationDefinition.ocrTextLengthMaxDuration = Math.round(durationDefinition.ocrTextLengthMaxDuration * multiplier);
 
     durationDefinition.countdownStart = (countdownStart < durationDefinition.ocrTextLengthMinDuration) ? countdownStart : durationDefinition.ocrTextLengthMinDuration;
     durationDefinition.coverDuration = (params.systemParams.coverDuration > durationDefinition.countdownStart) ? params.systemParams.coverDuration : durationDefinition.countdownStart;

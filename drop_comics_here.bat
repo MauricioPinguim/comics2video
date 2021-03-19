@@ -11,7 +11,7 @@ if "%node_installed%" equ "0" (
     echo https://nodejs.org/en/download
 ) else (
     if "%1" equ "" (
-        echo No Comic Book was dragged-and-dropped in this batch file, or provided as a parameter
+        echo No Comic Book file was dragged-and-dropped in this batch file, or provided as a parameter
         echo Starting comics2video using the default folder for Comic Book files
         node "%~dp0comics2video.js"
     ) else (
