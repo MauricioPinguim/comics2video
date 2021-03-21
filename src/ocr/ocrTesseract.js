@@ -15,8 +15,8 @@ const initializeOCR = async () => {
 
     // The file 'eng.traineddata.gz' in ocr folder is an english language data focused on speed instead of accuracy
     // Keep that file, or else Tesseract.js will download a default language data, bigger and slower
-    // There is no need to user other language files, the goal here is only to count the number of letters in each frame/page
-    // We don´t need to know what the characters said, only how many letters there were in the speech balloons, even if they are the wrong letters
+    // There is no need to use other language files, the goal here is only to count the number of letters in each frame/page
+    // We don´t need to know what the characters said in the Comics story, only how many letters there were in the speech balloons, even if they are the wrong letters
     worker = createWorker({ langPath: __dirname });
     await worker.load();
     await worker.loadLanguage('eng');
@@ -47,7 +47,7 @@ const isValidWord = (word) => {
         return false;
     }
 
-    // OCR result usually contains short words (mainly in lower case letters), from random things that are not real text
+    // OCR result contains false readings, usually short words (mainly in lower case letters) from random things (not real text)
     // Each word will be validated to remove them from the final result
 
     let lowerCount = 0;
@@ -62,13 +62,13 @@ const isValidWord = (word) => {
         // With 3 or more upper case letters, chances are that it is real text
         return true;
     } else if (lowerCount >= 4) {
-        // Even being lowercase, random readings usually don't have 4 letters or more
+        // Even being lowercase, false readings usually don't have 4 letters or more
         return true;
     } else if (upperCount >= 2 && lowerCount >= 3) {
-        // A combination of upper and lower case, probably not a random reading
+        // A combination of upper and lower case, probably not a false reading
         return true;
     }
-    // Most like to be a random reading, the word will be discarded
+    // Most like to be a false reading, the entire word will be discarded
     return false;
 };
 

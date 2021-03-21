@@ -18,7 +18,7 @@ const isFolder = (entry) => fs.lstatSync(entry).isDirectory();
 
 const isFile = (entry) => {
     if (fs.lstatSync(entry).isFile()) {
-        // File .gitkeep added just to git keep track of folder comics_files
+        // Ignore file '.gitkeep', added just to git keep track of folder comics_files
         return !entry.toLowerCase().includes('.gitkeep');
     }
 }
@@ -215,6 +215,14 @@ const prepareImageDestinationFolder = (file, filePart) => {
     }
 }
 
+const setCurrentWorkingDirectory = () => {
+    try {
+        const workingDirectory = path.join(__dirname, '../../');
+
+        process.chdir(workingDirectory);
+    } catch { }
+}
+
 module.exports = {
     getDefaultInputFolder,
     validateInputSource,
@@ -225,7 +233,9 @@ module.exports = {
     isZIP,
     isRAR,
     isPDF,
+    isFile,
     getImagesFiles,
     prepareImageDestinationFolder,
-    removeFolder
+    removeFolder,
+    setCurrentWorkingDirectory
 };

@@ -10,6 +10,13 @@
 const dependencies = require('./src/util/dependencies');
 
 if (dependencies.checkDependencies()) {
-    const index_CLI = require('./src/index_CLI');
-    index_CLI.start().then();
+    if (dependencies.availableFeatures.wizard) {
+        const indexWizard = require('./src/terminal/terminalWizard');
+        indexWizard.start().then(r => {
+            process.exit();
+        });
+    } else {
+        const indexBasic = require('./src/terminal/terminalBasic');
+        indexBasic.start().then();
+    }
 }

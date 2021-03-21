@@ -1,6 +1,6 @@
-const filedir = require('./util/filedir');
-const { log, logTypes } = require('./util/log');
-const main = require('./index');
+const filedir = require('../util/filedir');
+const { log, logTypes } = require('../util/log');
+const main = require('../index');
 
 const start = async () => {
     try {

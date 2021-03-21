@@ -89,7 +89,7 @@ For each comic book processed, a folder with the same name will be created, cont
 - Video generation: [ffmpeg-static](ffmpeg-static)
 
 ### Next steps
-- Simplified text-based UI to set User Parameters (for non-developers users)
+- Change result from printed logs to events
 - Make it available as a module at [npmjs.com](https://www.npmjs.com)
 
 ### Contact

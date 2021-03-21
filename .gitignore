@@ -103,4 +103,5 @@ dist
 # TernJS port file
 .tern-port
 
+# comics2video - Tesseract.js creates this file, but it is not the actual source of the Trained Data
 eng.traineddata

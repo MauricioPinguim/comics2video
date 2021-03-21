@@ -60,7 +60,7 @@ const systemParams = {
 const userParams = {
     generateVideo: true,
     ocrEnabled: true,
-    contentProfile: contentProfiles.complexContent,
+    contentProfile: contentProfiles.simpleContent,
     readingSpeed: readingSpeeds.normal,
     logLevel: 5
 }

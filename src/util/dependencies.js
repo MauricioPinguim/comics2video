@@ -7,7 +7,9 @@ const availableFeatures = {
     extractionFromRAR: false,
     extractionFromPDF: false,
     videoGeneration: false,
-    ocr: false
+    ocr: false,
+    wizard: false,
+    asciiTitle: false
 }
 
 const disabledFeatureMessages = [];
@@ -17,9 +19,7 @@ const checkFormattedLog = () => {
         require('chalk');
         // Flag will be set in the log.js file to avoid circular reference when this file generate its own log entries
         enableFormattedLog();
-    } catch {
-        // No alert, log entries will still be generated without format
-    }
+    } catch { }
 }
 
 const checkExtractionFromZIP = () => {
@@ -69,6 +69,20 @@ const checkOCR = () => {
     }
 }
 
+const checkWizard= () => {
+    try {
+        require('terminal-kit');
+        availableFeatures.wizard = true;
+    } catch { }
+}
+
+const checkASCIITitle= () => {
+    try {
+        require('figlet');
+        availableFeatures.asciiTitle = true;
+    } catch { }
+}
+
 const showInstallMessage = () => {
     log(`To install, run the following command in the comics2video root folder:`, 1);
     log(`npm install\n`, 1, logTypes.Warning)
@@ -110,6 +124,9 @@ const checkDependencies = () => {
     checkExtractionFromPDF();
     checkVideoGeneration();
     checkOCR();
+    
+    checkWizard();
+    checkASCIITitle();
 
     if (disabledFeatureMessages.length > 0) {
         log('\nSome required module dependencies for comics2video are missing and the following features will be disabled:', 1);

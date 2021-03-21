@@ -16,6 +16,9 @@ const duration = require('./video/duration');
 const params = require('./params');
 
 const initialize = async (processData) => {
+    // Must set this folder to prevent Tesseract.js from creating the Trained data file elsewhere    
+    filedir.setCurrentWorkingDirectory();
+    
     if (dependencies.availableFeatures.ocr) {
         await require('./ocr/ocrTesseract').initializeOCR();
     }
@@ -53,7 +56,7 @@ const process = async (source, paramValues = {}) => {
     params.setParamValues(paramValues);
 
     try {
-        log('\ncomics2video started - analysing input files', 1)
+        log('\ncomics2video started - analysing input files      ', 1); // Extra spaces to clear Terminal Wizard text
         const processData = new ProcessData(source);
         processData.startTime = new Date();
         filedir.findSourceFiles(processData);

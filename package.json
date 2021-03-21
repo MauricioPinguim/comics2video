@@ -12,10 +12,12 @@
         "cross-unzip": "^0.2.1",
         "deltree": "^1.2.8",
         "ffmpeg-static": "^4.2.7",
+        "figlet": "^1.5.0",
         "has-flag": "^4.0.0",
         "pdfjs-dist": "^2.6.347",
         "sharp": "^0.27.2",
         "spawn-please": "^1.0.0",
+        "terminal-kit": "^2.0.5",
         "tesseract.js": "^2.1.4",
         "unrar-promise": "^2.0.1",
         "win-7zip": "^0.1.1"
@@ -49,5 +51,5 @@
     },
     "scripts": {},
     "title": "comic2video",
-    "version": "0.1.0"
+    "version": "0.5.0"
 }
