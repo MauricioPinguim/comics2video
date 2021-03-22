@@ -27,7 +27,7 @@ npm install
 
 > 🗋 drop_comics_here.bat
 
-![Drag-and-drop file to start](./docs/images/drag_drop_start.gif)
+![Drag-and-drop file to start](./docs/images/drag-drop-start.gif)
 
 To process multiple Comic Book files, put them in a folder and drag-and-drop the folder.
 
