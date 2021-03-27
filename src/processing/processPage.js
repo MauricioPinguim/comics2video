@@ -1,7 +1,6 @@
 const sharp = require('sharp');
 const Frame = require('../classes/Frame');
 const cover = require('../image/cover.js');
-const { log, logTypes } = require('../util/log');
 const params = require('../params');
 const processFrame = require('./processFrame');
 
@@ -68,7 +67,8 @@ const fillFrames = (page, halfNumber) => {
     }
 }
 
-const preparePage = async (page) => {
+const preparePage = async (processData) => {
+    const { filePart, page } = processData.getCurrentData();
     const image = sharp(page.source);
 
     if (page.height > page.width) {
@@ -97,17 +97,20 @@ const preparePage = async (page) => {
     }
 
     page.frames.sort((a, b) => a.order - b.order);
+    page.imageFrameProgressIncrement = filePart.imagePageProgressIncrement * (1 / page.frames.length);
 }
 
 const process = async (processData) => {
+    const { page } = processData.getCurrentData();
     try {
-        const { page } = processData.getCurrentData();
-
         if (page.coverType) {
             await cover.generateCover(processData);
         } else {
-            log(`Processing page ${page.number}`, 3);
-            await preparePage(page);
+            processData.progress({
+                page: `Page ${page.number}`,
+                action: `Calculating Frames`
+            });
+            await preparePage(processData);
 
             while (page.selectNextFrame()) {
                 await processFrame.process(processData);
@@ -115,7 +118,7 @@ const process = async (processData) => {
             page.resizedImageBuffer = null;
         }
     } catch (error) {
-        log(`Page process failed. ${error}`, 3, logTypes.Error);
+        processData.error(`Page ${page.number} process failed. ${error}`);
     }
 }
 

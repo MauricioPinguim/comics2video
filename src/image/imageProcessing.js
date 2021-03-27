@@ -15,7 +15,7 @@ const generateCountDown = async (processData, sourceImageBuffer, iconText = '') 
         return;
     }
 
-    const { file, frame } = processData.getCurrentData();
+    const { file, filePart, frame } = processData.getCurrentData();
 
     for (let count = processData.durationDefinition.countdownStart; count >= 1; count--) {
         const image = await sharp(sourceImageBuffer);
@@ -31,6 +31,7 @@ const generateCountDown = async (processData, sourceImageBuffer, iconText = '') 
         await saveImage(image, destinationFile);
 
         frame.countdownImages.push(fileName);
+        filePart.totalVideoFrames++;
     }
 }
 

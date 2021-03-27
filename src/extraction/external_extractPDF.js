@@ -1,8 +1,8 @@
 /**
  * WARNING
- * The PDF extraction must run in a separated process. The extractor ('pdfjs-dist') uses 'Canvas' to render the PDF pages, wich will later conflict with 'Sharp' at the step of adding text to the images
+ * The PDF extraction must run in a separated process. The extractor ('pdfjs-dist') uses 'Canvas' to render the PDF pages, which will later conflict with 'Sharp' on the step of adding text to the images
  * 
- * If the line "const Canvas = require('canvas');" is part of the main process, even if the processed file is not PDF, it will still make Sharp crash later, so don´t run in the same process linking with "module.exports = "
+ * If the line "const Canvas = require('canvas');" is part of the main process, even if the processed file is not PDF, it will still make Sharp crash later, so do not run it in the same process linking with "module.exports ="
  * Instead, run in another process using command line parameters: node external_extractPDF.js file.PDF destinationFolder
  */
 const assert = require('assert').strict;

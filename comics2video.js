@@ -9,14 +9,17 @@
 
 const dependencies = require('./src/util/dependencies');
 
-if (dependencies.checkDependencies()) {
-    if (dependencies.availableFeatures.wizard) {
-        const indexWizard = require('./src/terminal/terminalWizard');
-        indexWizard.start().then(r => {
+(async () => {
+    if (dependencies.checkDependencies()) {
+        if (dependencies.availableFeatures.wizard) {
+            const terminalWizard = require('./src/terminal/terminalWizard');
+            await terminalWizard.start();
             process.exit();
-        });
+        } else {
+            const terminalBasic = require('./src/terminal/terminalBasic');
+            await terminalBasic.start();
+        }
     } else {
-        const indexBasic = require('./src/terminal/terminalBasic');
-        indexBasic.start().then();
+        dependencies.showDependenciesMessage();
     }
-}
+})();

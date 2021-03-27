@@ -1,11 +1,10 @@
 const term = require('terminal-kit').terminal;
+const { userParams, systemParams } = require('../params');
 const dependencies = require('../util/dependencies');
 const filedir = require('../util/filedir');
-const { log, logTypes } = require('../util/log');
-const main = require('../index');
-const params = require('../params');
+const terminalElaborate = require('./terminalElaborate');
+const terminalBasic = require('./terminalBasic');
 
-const wizardParams = {};
 let source;
 
 const getSource = () => {
@@ -17,9 +16,9 @@ const getSource = () => {
 
 const showSource = () => {
     if (filedir.isFile(source)) {
-        term.brightBlue('Comic Book file to be processed:')    
+        term.cyan('Comic Book file to be processed:')
     } else {
-        term.brightMagenta('Folder containing Comic Book files to be processed:')    
+        term.brightMagenta('Folder containing Comic Book files to be processed:')
     }
     term.styleReset();
     term(` ${source}\n\n`);
@@ -57,7 +56,6 @@ const step = async (stepData) => {
         showAppTitle();
         showSource();
         term(`${stepData.title}`);
-        term.saveCursor()
         term('\n');
 
         const maxDescriptionLength = Math.max.apply(
@@ -72,6 +70,9 @@ const step = async (stepData) => {
         }
         showKeys();
 
+        term.up(stepData.menuOptions.length + 3);
+        term('\n');
+
         const selectedIndex = stepData.menuOptions
             .find(menuOption => menuOption.value === stepData.defaultValue)
             .index;
@@ -82,8 +83,9 @@ const step = async (stepData) => {
             leftPadding: ' '
         }
 
-        term.restoreCursor()
         term.singleColumnMenu(items, options, function (error, response) {
+            term.up(stepData.menuOptions.length + 2);
+
             if (error || !response || response.canceled) {
                 return resolve();
             }
@@ -95,53 +97,14 @@ const step = async (stepData) => {
 }
 
 const quit = () => {
-    term.yellow("\n\n\ncomics2video process canceled\n\n");
-}
-
-const stepLogLevel = async () => {
-    let defaultLogLevel = params.userParams.logLevel;
-    if (defaultLogLevel === 2) {
-        defaultLogLevel = 1;
-    } else if (defaultLogLevel === 4) {
-        defaultLogLevel = 3;
-    }
-
-    const stepData = {
-        defaultValue: defaultLogLevel,
-        title: 'Log level:',
-        menuOptions: [
-            {
-                index: 0,
-                text: '1',
-                description: 'Basic info',
-                value: 1
-            },
-            {
-                index: 1,
-                text: '3',
-                description: 'Skip frame info',
-                value: 3
-            },
-            {
-                index: 2,
-                text: '5',
-                description: 'Detailed info',
-                value: 5
-            }]
-    }
-
-    const response = await step(stepData);
-    if (!response) {
-        quit();
-    } else {
-        wizardParams.logLevel = response.value;
-        await main.process(source, wizardParams);
-    }
+    term.eraseDisplayBelow();
+    term.yellow("\ncomics2video process canceled\n");
+    term.hideCursor();
 }
 
 const stepReadingSpeed = async () => {
     const stepData = {
-        defaultValue: params.userParams.readingSpeed.name,
+        defaultValue: userParams.readingSpeed.name,
         title: 'Reading speed:',
         menuOptions: [
             {
@@ -168,14 +131,14 @@ const stepReadingSpeed = async () => {
     if (!response) {
         quit();
     } else {
-        wizardParams.readingSpeed = response.value;
-        await stepLogLevel();
+        userParams.readingSpeed = response.value;
+        await startProcess();
     }
 }
 
 const stepContentProfile = async () => {
     const stepData = {
-        defaultValue: params.userParams.contentProfile.name,
+        defaultValue: userParams.contentProfile.name,
         title: 'Comic Book profile',
         menuOptions: [
             {
@@ -196,14 +159,14 @@ const stepContentProfile = async () => {
     if (!response) {
         quit();
     } else {
-        wizardParams.contentProfile = response.value;
+        userParams.contentProfile = response.value;
         await stepReadingSpeed();
     }
 }
 
 const stepOCREnabled = async () => {
     const stepData = {
-        defaultValue: params.userParams.ocrEnabled,
+        defaultValue: userParams.ocrEnabled,
         title: 'Use OCR?',
         menuOptions: [
             {
@@ -224,14 +187,14 @@ const stepOCREnabled = async () => {
     if (!response) {
         quit();
     } else {
-        wizardParams.ocrEnabled = response.value;
+        userParams.ocrEnabled = response.value;
         await stepContentProfile();
     }
 }
 
 const stepGenerateVideo = async () => {
     const stepData = {
-        defaultValue: params.userParams.generateVideo,
+        defaultValue: userParams.generateVideo,
         title: 'Generate video?',
         menuOptions: [
             {
@@ -252,13 +215,17 @@ const stepGenerateVideo = async () => {
     if (!response) {
         quit();
     } else {
-        wizardParams.generateVideo = response.value;
+        userParams.generateVideo = response.value;
         if (response.value) {
             await stepOCREnabled();
         } else {
-            await stepLogLevel();
+            await startProcess();
         }
     }
+}
+
+const startProcess = async () => {
+    await terminalElaborate.start(source, userParams);
 }
 
 const stepStartDefault = async () => {
@@ -285,23 +252,23 @@ const stepStartDefault = async () => {
     if (!response) {
         quit();
     } else if (response.value) {
-        term('\n\n');
-        await main.process(source);
+        await startProcess();
     } else {
         await stepGenerateVideo();
     }
 }
 
 const start = async () => {
-    try {
-        getSource();
-        
-        wizardParams.generateVideo = params.userParams.generateVideo;
-        
-        await stepStartDefault();
-    } catch (error) {
-        log(`Unable to start comics2video process. ${error}`, 1, logTypes.Error);
+    if (systemParams.disableTerminalElaborate) {
+        await terminalBasic.start(source);
+        return;
     }
+
+    getSource();
+    term.windowTitle('comics2video');
+    term.hideCursor();
+
+    await stepStartDefault();
 }
 
 module.exports = { start }

@@ -6,13 +6,14 @@ module.exports = class FilePart {
         this.isMultiPart = file.isMultiPart;
         this.title = file.title;
         this.videoSequence = [];
+        this.totalVideoFrames = 0;
 
         if (file.isMultiPart) {
             this.partTitle = `Part ${partNumber.toString().padStart(2, '0')}`;
-            this.videoFile = `${file.formattedTitle} - ${this.partTitle}`;
+            this.outputFile = `${file.formattedTitle} - ${this.partTitle}`;
         } else {
             this.partTitle = '';
-            this.videoFile = file.formattedTitle;
+            this.outputFile = file.formattedTitle;
         }
     }
 

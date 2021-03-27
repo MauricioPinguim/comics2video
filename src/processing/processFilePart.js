@@ -1,6 +1,5 @@
-const dependencies = require('../util/dependencies');
-const { log, logTypes } = require('../util/log');
 const params = require('../params');
+const dependencies = require('../util/dependencies');
 const processPage = require('./processPage');
 
 const processPages = async (processData) => {
@@ -10,29 +9,36 @@ const processPages = async (processData) => {
         await processPage.process(processData);
     }
 
+    processData.progress({
+        element: 'Images',
+        action: 'Images generated',
+        percent: 100
+    });
     filePart.imageOK = true;
 }
 
 const process = async (processData) => {
+    const { file, filePart } = processData.getCurrentData();
     try {
-        const { filePart } = processData.getCurrentData();
-
-        log(`Processing file part '${filePart.videoFile}'`, 2);
+        const partText = file.fileParts.length > 1 ? `Part ${filePart.number}/${file.fileParts.length}` : '';
+        processData.progressPercent = 0;
+        processData.progress({
+            filePart: partText,
+            element: `Images`,
+            action: `Processing Pages`
+        });
 
         await processPages(processData);
 
         if (!params.userParams.generateVideo) {
             filePart.videoOK = true;
         } else if (!dependencies.availableFeatures.videoGeneration) {
-            log(`Video generation skipped due to missing dependencies`, 3, logTypes.Warning);
+            processData.error(`'${filePart.outputFile}' video generation skipped due to missing dependencies`);
         } else {
             await require('../video/videoGenerator').process(processData);
         }
-
-        log(`File part '${filePart.videoFile}' processed`, 2);
-
     } catch (error) {
-        log(`File part process failed. ${error}`, 2, logTypes.Error);
+        processData.error(`'${filePart.outputFile}' process failed. ${error}`);
     }
 }
 

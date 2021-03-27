@@ -26,8 +26,7 @@ npm install
 (Windows only) Select the Comic Book file and drag-and-drop it on the batch file located in the root folder of comics2video:
 
 > 🗋 drop_comics_here.bat
-
-![Drag-and-drop file to start](./docs/images/drag-drop-start.gif)
+<!--- ![Drag-and-drop file to start](./docs/images/drag-drop-start.gif) -->
 
 To process multiple Comic Book files, put them in a folder and drag-and-drop the folder.
 
@@ -45,25 +44,38 @@ node comics2video ./path/myComicBook.cbr
 If the parameter is a folder, all files will be processed.
 
 ### Option C: As a Node.js module
-Fisrt run a **npm install** in the comics2video root folder. After that, in your project root folder:
+Find the path to the comics2video local folder and add it to you own Node.js project using:
 ```sh
-npm install ./pathToComics2video
+npm install ./full-path-to-comics2video-folder
 ```
 Then use:
 ```javascript
-const comics2video = require('comics2video'); // Local installation, not available in npmjs.com yet
+const Comics2video = require('comics2video'); // Local installation, not available in npmjs.com yet
 
-const source = './path/myComicBook.cbr'; // Or folder containing the Comic Book files
+const source = './path/myComicBook.cbr'; // File or Folder containing the Comic Book files
 
 const userParameters = {
 	generateVideo : true,
 	ocrEnabled: true,
 	contentProfile: 'complex',
-	readingSpeed: 'normal',
-	logLevel: 5
+	readingSpeed: 'normal'
 }; // userParameters is optional, see default values in the next section
 
-await comics2video.process(source, userParameters);
+const comicsConversion = new Comics2video(source, userParameters);
+
+// Follow-up Events, process can take more than 1 minute per page
+comicsConversion.on('progressUpdated', (data) => {
+	// console.log(data.toString()); // Commented out, prefer using the fields in the 'data' object instead
+});
+comicsConversion.on('processCompleted', (data) => {
+	for (const item of data.messages) {
+		console.log(`${item.messageType} ► ${item.message}`); // Only important result messages
+	}
+});
+
+( async () => {
+	await comicsConversion.start();
+})();
 ```
 
 ### User Parameters
@@ -73,7 +85,6 @@ await comics2video.process(source, userParameters);
 | ocrEnabled | boolean | true | If false, disables OCR and uses a fixed duration in all frames
 | contentProfile | string:<br/>'simple', 'complex' | 'complex' | Changes how OCR calculates each frame duration:<br/>• 'simple' : Ideal for Comics for kids, art with few details<br />• 'complex' : For Superhero or Comics with detailed art
 | readingSpeed | string:<br/> 'slow', 'normal', 'fast' | 'normal' | Also changes how OCR calculates duration:<br/>• 'slow' : Ideal for Kids or reading in foreign language<br />• 'normal' : Normal reading speed<br />• 'fast' : For speed reading
-| logLevel | number:<br />1, 2, 3, 4, 5 | 5 | From 1 to 5, how much information will be printed in logs:<br/>1 : Basic information, 5 : Detailed log
 
 ### Using the generated files
 For each comic book processed, a folder with the same name will be created, containing:
@@ -91,8 +102,8 @@ For each comic book processed, a folder with the same name will be created, cont
 - Video generation: [ffmpeg-static](ffmpeg-static)
 
 ### Next steps
-- Change result from printed logs to events
 - Make it available as a module at [npmjs.com](https://www.npmjs.com)
+- Graphical User Interface to select files and set User Parameters (for non-developers users) 
 
 ### Contact
 :penguin: Maurício Antunes Oliveira: [mauricio_pinguim@hotmail.com](mailto:mauricio_pinguim@hotmail.com?subject=comics2video)

@@ -40,10 +40,13 @@
         "rar",
         "cbz",
         "zip",
-        "pdf"
+        "pdf",
+        "quadrinhos",
+        "hq",
+        "gibi"
     ],
     "license": "Apache-2.0",
-    "main": "./src/index.js",
+    "main": "./src/classes/Comics2video.js",
     "name": "comics2video",
     "repository": {
         "type": "git",
@@ -51,5 +54,5 @@
     },
     "scripts": {},
     "title": "comic2video",
-    "version": "0.5.0"
+    "version": "0.6.0"
 }

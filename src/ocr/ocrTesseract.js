@@ -1,5 +1,4 @@
 const { createWorker } = require('tesseract.js');
-const { log, logTypes } = require('../util/log');
 const params = require('../params');
 
 const whitelistLower = 'abcdefghijklmnopqrstuvwxyz';
@@ -95,7 +94,6 @@ const getValidTextLength = async (file) => {
 
         return filteredResult.length;
     } catch {
-        log(`Unable to process OCR on file '${file}' : ${error}`, 5, logTypes.Error);
         return -1;
     }
 }

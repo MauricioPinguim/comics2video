@@ -16,7 +16,7 @@ const getAsciiTitle = (title, subtitle, defaultTitle, terminalWidth) => {
         }
 
         const asciiTitle = figlet.textSync(title, { font });
-        
+
         return `${asciiTitle}\n${subtitle}`;
     } catch {
         return defaultTitle;

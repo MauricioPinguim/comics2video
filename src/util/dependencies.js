@@ -1,8 +1,10 @@
 const fs = require('fs');
 const path = require('path');
-const { log, logTypes, enableFormattedLog } = require('./log');
+const { log, enableFormattedLog } = require('../terminal/basicLog');
 
 const availableFeatures = {
+    nodeModules: false,
+    basicDependencies: false,
     extractionFromZIP: false,
     extractionFromRAR: false,
     extractionFromPDF: false,
@@ -11,8 +13,6 @@ const availableFeatures = {
     wizard: false,
     asciiTitle: false
 }
-
-const disabledFeatureMessages = [];
 
 const checkFormattedLog = () => {
     try {
@@ -27,27 +27,21 @@ const checkExtractionFromZIP = () => {
         require('cross-unzip');
         require('win-7zip');
         availableFeatures.extractionFromZIP = true;
-    } catch {
-        disabledFeatureMessages.push('Extraction from CBZ/ZIP files');
-    }
+    } catch { }
 }
 
 const checkExtractionFromRAR = () => {
     try {
         require('unrar-promise');
         availableFeatures.extractionFromRAR = true;
-    } catch {
-        disabledFeatureMessages.push('Extraction from CBR/RAR files');
-    }
+    } catch { }
 }
 
 const checkExtractionFromPDF = () => {
     try {
         require('pdfjs-dist');
         availableFeatures.extractionFromPDF = true;
-    } catch {
-        disabledFeatureMessages.push('Extraction from PDF files');
-    }
+    } catch {}
 }
 
 const checkVideoGeneration = () => {
@@ -55,18 +49,14 @@ const checkVideoGeneration = () => {
         require('ffmpeg-static');
         require('spawn-please');
         availableFeatures.videoGeneration = true;
-    } catch {
-        disabledFeatureMessages.push('Video generation');
-    }
+    } catch {}
 }
 
 const checkOCR = () => {
     try {
         require('tesseract.js');
         availableFeatures.ocr = true;
-    } catch {
-        disabledFeatureMessages.push('OCR (a fixed default duration will be applied to all frames)');
-    }
+    } catch {}
 }
 
 const checkWizard= () => {
@@ -84,8 +74,8 @@ const checkASCIITitle= () => {
 }
 
 const showInstallMessage = () => {
-    log(`To install, run the following command in the comics2video root folder:`, 1);
-    log(`npm install\n`, 1, logTypes.Warning)
+    log(`To install, run the following command in the comics2video root folder:`);
+    log(`npm install\n`, 'warning');
 }
 
 const checkBasicDepencencies = () => {
@@ -101,24 +91,29 @@ const checkBasicDepencencies = () => {
 const checkDependenciesFolder = () => {
     const folder = path.join(__dirname, '../../node_modules');
 
-    return fs.existsSync(folder);
+    return availableFeatures.nodeModules = fs.existsSync(folder);
+}
+
+const showDependenciesMessage = () =>
+{
+    if (!availableFeatures.nodeModules) {
+        log('\nAll the required module dependencies for comics2video are missing');
+        showInstallMessage();
+    } else if (!availableFeatures.basicDependencies) {
+        log('\nThe basic required module dependencies for comics2video are missing', 'warning');
+        showInstallMessage();
+    }
 }
 
 const checkDependencies = () => {
     if (!checkDependenciesFolder()) {
-        log('\nAll the required module dependencies for comics2video are missing');
-        showInstallMessage();
+        return false;
+    }
+    if (!checkBasicDepencencies()) {
         return false;
     }
 
     checkFormattedLog();
-
-    if (!checkBasicDepencencies()) {
-        log('\nThe basic required module dependencies for comics2video are missing', 1, logTypes.Warning);
-        showInstallMessage();
-        return false;
-    }
-
     checkExtractionFromZIP();
     checkExtractionFromRAR();
     checkExtractionFromPDF();
@@ -128,17 +123,11 @@ const checkDependencies = () => {
     checkWizard();
     checkASCIITitle();
 
-    if (disabledFeatureMessages.length > 0) {
-        log('\nSome required module dependencies for comics2video are missing and the following features will be disabled:', 1);
-        for (const message of disabledFeatureMessages) {
-            log(message, 2, logTypes.Warning);
-        }
-        showInstallMessage();
-    }
     return true;
 }
 
 module.exports = {
     checkDependencies,
+    showDependenciesMessage,
     availableFeatures
 }

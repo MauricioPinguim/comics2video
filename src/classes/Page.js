@@ -16,11 +16,7 @@ module.exports = class Page {
     }
 
     isValidSize() {
-        if (!this.width || !this.height) {
-            log(`Unable to get image size for page '${this.source}. Page ignored `, 2, logTypes.Warning);
-            return false;
-        }
-        return true;
+        return this.width && this.height;
     }
 
     currentFrame() {

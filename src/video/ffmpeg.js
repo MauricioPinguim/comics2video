@@ -38,8 +38,8 @@ const generatePageTransition = async (processData, from, to, transition) => {
 
 const joinVideos = async (processData, joinFile) => {
     const { file, filePart } = processData.getCurrentData();
-    const output1 = path.join(file.tempFolders.videoJoin, `${filePart.videoFile}_TMP.mp4`);
-    const output2 = path.join(file.destinationFolder, `${filePart.videoFile}.mp4`);
+    const output1 = path.join(file.tempFolders.videoJoin, `${filePart.outputFile}_TMP.mp4`);
+    const output2 = path.join(file.destinationFolder, `${filePart.outputFile}.mp4`);
 
     let paramArray = ['-f', 'concat', '-safe', '0', '-i', joinFile, '-c', 'copy', '-y', output1];
     await spawn(ffmpegFullPath, paramArray);

@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const File = require('../classes/File')
 const dependencies = require('./dependencies');
-const { log, logTypes } = require('./log');
 
 const fileExtensions = {
     ZIP: ['.cbz', '.zip'],
@@ -17,7 +16,7 @@ const entryExists = (entry) => fs.existsSync(entry);
 const isFolder = (entry) => fs.lstatSync(entry).isDirectory();
 
 const isFile = (entry) => {
-    if (fs.lstatSync(entry).isFile()) {
+    if (entryExists(entry) && fs.lstatSync(entry).isFile()) {
         // Ignore file '.gitkeep', added just to git keep track of folder comics_files
         return !entry.toLowerCase().includes('.gitkeep');
     }
@@ -47,29 +46,12 @@ const removeFolder = (path) => {
     }
 }
 
-const getDefaultInputFolder = () => {
-    const folder = path.join(__dirname, '../../comics_files');
-
-    if (!entryExists(folder) || !isFolder(folder)) {
-        throw new Error(`Default input folder not found in '${folder}'`);
-    }
-
-    return folder;
-}
-
-const validateInputSource = (source) => {
-    if (!entryExists(source)) {
-        throw new Error(`Input file or folder '${source}' not found`);
-    }
-}
+const getDefaultInputFolder = () => path.join(__dirname, '../../comics_files');
 
 const isImageExtensionValid = (file) => {
     const extension = getFileExtension(file);
-    if (!imageExtensions.includes(extension)) {
-        log(`'${extension}' is not a supported extension for source pages. Page '${file}' ignored `, 2, logTypes.Warning);
-        return false;
-    }
-    return true;
+
+    return imageExtensions.includes(extension);
 }
 
 const getImagesFiles = (sourceFolder) => {
@@ -78,38 +60,40 @@ const getImagesFiles = (sourceFolder) => {
         .map(file => path.join(sourceFolder, file));
 }
 
-const checkExtensionEnabled = (extension, file, extensionEnabled) => {
+const checkExtensionEnabled = (processData, extension, fileName, extensionEnabled) => {
     if (extensionEnabled) {
         return true;
     }
-    log(`Extraction of '${extension}' files are disabled due to missing dependencies. File '${file}' ignored `, 2, logTypes.Warning);
+    processData.warning(`'${extension}' extraction disabled due to missing dependencies, file '${fileName}' ignored `);
 }
 
-const isSourceExtensionValid = (file) => {
-    const extension = getFileExtension(file);
+const isSourceExtensionValid = (processData, fileName) => {
+    const extension = getFileExtension(fileName);
 
-    if (isZIP(file)) {
-        return checkExtensionEnabled(extension, file, dependencies.availableFeatures.extractionFromZIP);
+    if (isZIP(fileName)) {
+        return checkExtensionEnabled(processData, extension, fileName, dependencies.availableFeatures.extractionFromZIP);
     }
-    if (isRAR(file)) {
-        return checkExtensionEnabled(extension, file, dependencies.availableFeatures.extractionFromRAR);
+    if (isRAR(fileName)) {
+        return checkExtensionEnabled(processData, extension, fileName, dependencies.availableFeatures.extractionFromRAR);
     }
-    if (isPDF(file)) {
-        return checkExtensionEnabled(extension, file, dependencies.availableFeatures.extractionFromPDF);
+    if (isPDF(fileName)) {
+        return checkExtensionEnabled(processData, extension, fileName, dependencies.availableFeatures.extractionFromPDF);
     }
 
-    log(`'${extension}' is not a supported Comic Book file extension. File '${file}' ignored `, 2, logTypes.Warning);
+    processData.warning(`Not supported extension, file '${fileName}' ignored `);
 }
 
 const findSourceFiles = (processData) => {
     try {
         const source = processData.source;
         if (!entryExists(source)) {
-            return log(`File or folder '${source}' not found`, 2, logTypes.Warning);
+            return processData.warning(`File or folder '${source}' not found`);
         }
         if (isFile(source)) {
-            if (isSourceExtensionValid(source)) {
-                return processData.files.push(new File(source));
+            if (isSourceExtensionValid(processData, getFile(source))) {
+                const newFile = new File(path.resolve(source));
+                processData.files.push(newFile);
+                newFile.sourceFileName = getFile(source);
             }
         } else {
             const files = fs.readdirSync(source)
@@ -117,12 +101,14 @@ const findSourceFiles = (processData) => {
                 .filter(file => isFile(file));
 
             if (files.length === 0) {
-                return log(`No file was found in folder '${source}'`, 2, logTypes.Warning);
+                return processData.warning(`No file was found in folder '${source}'`);
             }
 
-            for (const file of files) {
-                if (isSourceExtensionValid(file)) {
-                    processData.files.push(new File(file));
+            for (const fileName of files) {
+                if (isSourceExtensionValid(processData, getFile(fileName))) {
+                    const newFile = new File(path.resolve(fileName));
+                    processData.files.push(newFile);
+                    newFile.sourceFileName = getFile(fileName);
                 }
             }
         }
@@ -225,7 +211,6 @@ const setCurrentWorkingDirectory = () => {
 
 module.exports = {
     getDefaultInputFolder,
-    validateInputSource,
     findSourceFiles,
     setFolderStructure,
     createFolderStructure,
@@ -234,6 +219,7 @@ module.exports = {
     isRAR,
     isPDF,
     isFile,
+    getFile,
     getImagesFiles,
     prepareImageDestinationFolder,
     removeFolder,

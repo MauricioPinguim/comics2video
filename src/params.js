@@ -49,20 +49,20 @@ const systemParams = {
     ocrResizeRatio: .65,
     coverDuration: 13,
     pagesPerFilePart: 25,
-    maximumPagesWithoutSplit: 30, // Modern comic books usually have a little more than 25 pages, so 30 is a more practical limit to start the division
+    maximumPagesWithoutSplit: 30, // Modern comic books usually have a little more than 25 pages, so 30 is a more practical threshold to start the division
     jpegOutputQuality: 50,
     jpegOCROutputQuality: 80,
     videoFrameRate: 8,
     videoQualityMBPS: .5,
-    keepTempFolder: false
+    keepTempFolder: false,
+    disableTerminalElaborate: false
 }
 
 const userParams = {
     generateVideo: true,
     ocrEnabled: true,
     contentProfile: contentProfiles.complexContent,
-    readingSpeed: readingSpeeds.normal,
-    logLevel: 5
+    readingSpeed: readingSpeeds.normal
 }
 
 const setGenerateVideo = (generateVideo) => {
@@ -121,15 +121,6 @@ const setReadingSpeed = (readingSpeed) => {
     }
 }
 
-const setLogLevel = (logLevel) => {
-    if (typeof logLevel === 'number' || typeof logLevel === 'string') {
-        const value = parseInt(logLevel);
-        if (!isNaN(value)) {
-            userParams.logLevel = value;
-        }
-    }
-}
-
 const setParamValues = (paramValues) => {
     if (!paramValues) {
         return;
@@ -139,7 +130,6 @@ const setParamValues = (paramValues) => {
     setOcrEnabled(paramValues.ocrEnabled);
     setContentProfile(paramValues.contentProfile);
     setReadingSpeed(paramValues.readingSpeed);
-    setLogLevel(paramValues.logLevel);
 }
 
 module.exports = {

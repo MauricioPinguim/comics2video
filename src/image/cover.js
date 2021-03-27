@@ -2,7 +2,6 @@ const path = require('path');
 const sharp = require('sharp');
 const Frame = require('../classes/Frame');
 const Page = require('../classes/Page');
-const { log, logTypes } = require('../util/log');
 const params = require('../params');
 const imageUtil = require('./imageProcessing');
 const svg = require('./svg');
@@ -14,7 +13,10 @@ const generateCover = async (processData) => {
     const coverTempLocation = file.tempFolders.root;
     const isFrontCover = (page.coverType === coverTypes.FrontCover);
 
-    log(`Processing ${isFrontCover ? 'front' : 'back'} cover`, 3);
+    processData.progress({
+        page: `${isFrontCover ? 'Front' : 'Back'} cover`,
+        action: 'Image'
+    });
 
     const coverImage = await sharp({
         create: {
@@ -59,7 +61,9 @@ const generateCover = async (processData) => {
     page.frames.push(frame);
     page.selectNextFrame();
 
+    processData.progress({ action: `Countdown` });
     await imageUtil.generateCountDown(processData, coverImageBufferBeforSave);
+    processData.progressPercent += filePart.imagePageProgressIncrement;
 }
 
 const generateCoverThumbnail = async (destinationFolder, pageSource) => {
@@ -123,10 +127,11 @@ const generateCoverBackground = async (destinationFolder, pageSource) => {
     await imageUtil.saveImage(image, path.join(destinationFolder, '_COVER_BG.jpg'));
 }
 
-const prepareCoverImages = async (file) => {
+const prepareCoverImages = async (processData) => {
+    const { file } = processData.getCurrentData();
     const firstPage = file.sourcePages[0];
 
-    log(`Processing cover images`, 2);
+    processData.progress({ action: `Processing cover images` });
 
     await generateCoverBackground(file.tempFolders.root, firstPage.source);
     await generateCoverThumbnail(file.tempFolders.root, firstPage.source);

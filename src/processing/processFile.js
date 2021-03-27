@@ -2,9 +2,8 @@ const FilePart = require('../classes/FilePart');
 const Page = require('../classes/Page');
 const cover = require('../image/cover.js');
 const extract = require('../extraction/extract');
-const filedir = require('../util/filedir');
-const { log, logTypes } = require('../util/log');
 const params = require('../params');
+const filedir = require('../util/filedir');
 const processFilePart = require('./processFilePart');
 
 const analyzePages = async (file) => {
@@ -34,6 +33,7 @@ const addPages = (processData, filePart) => {
     }
 
     cover.addCoverPages(filePart);
+    filePart.imagePageProgressIncrement = 1 / filePart.pages.length * 100;
 }
 
 const addFileParts = async (processData) => {
@@ -61,46 +61,54 @@ const removeTempFolder = (processData) => {
             filedir.removeFolder(file.tempFolders.root);
         }
     } catch (error) {
-        log(`Unable to remove temp folder ${file.tempFolders.root}. Folder must be deleted manually`, 2, logTypes.Warning);
+        processData.warning(`Unable to remove temp folder ${file.tempFolders.root}. Folder must be deleted manually`);
     }
 }
 
 const process = async (processData) => {
+    const { file } = processData.getCurrentData();
     try {
-        const { file } = processData.getCurrentData();
-        log(`\nProcessing file '${file.source}'`, 1);
+        processData.progress({
+            file: `File '${file.sourceFileName}'`,
+            action: `Creating folders`
+        });
 
         filedir.setFolderStructure(file);
         if (!filedir.createFolderStructure(file)) {
-            return log(`Destination folder '${file.destinationFolder}' already exists. File will not be processed`, 1, logTypes.Error);
+            return processData.warning(`Destination folder for '${file.sourceFileName}' already exists`);
         }
 
-        await extract.extractFile(file);
+        if (!await extract.extractFile(processData)) {
+            return processData.error(`Unable to extract file '${file.sourceFileName}'`);
+        }
 
         await analyzePages(file);
         if (file.sourcePages.length === 0) {
-            return log(`No valid page file found in extracted file`, 1, logTypes.Error);
+            return processData.error(`No valid page file found in file '${file.sourceFileName}'`);
         }
 
         file.startedOK = true;
 
         await addFileParts(processData);
-        if (file.fileParts.length > 1) {
-            log(`File has more than ${params.systemParams.maximumPagesWithoutSplit} pages and will splitted into parts of ${params.systemParams.pagesPerFilePart} pages`, 2);
-        }
 
-        await cover.prepareCoverImages(file);
+        await cover.prepareCoverImages(processData);
 
         while (file.selectNextFilePart()) {
             await processFilePart.process(processData);
         }
 
         file.completedOK = file.fileParts.every(part => part.imageOK && part.videoOK);
-
-        log(`File '${file.source}' processed`, 1);
     } catch (error) {
-        log(`File process failed. ${error}`, 1, logTypes.Error);
+        processData.error(`'${file.sourceFileName}' file process failed. ${error}`);
     } finally {
+        if (!file.startedOK) {
+            processData.error(`File '${file.sourceFileName}' not processed due to errors`);
+        } else if (!file.completedOK) {
+            processData.error(`File '${file.sourceFileName}' processed, with errors`);
+        } else {
+            processData.success(`File '${file.sourceFileName}' processed successfully`);
+        }
+
         await removeTempFolder(processData);
     }
 }

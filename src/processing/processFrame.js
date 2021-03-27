@@ -2,7 +2,6 @@ const path = require('path');
 const sharp = require('sharp');
 const imageUtil = require('../image/imageProcessing');
 const svg = require('../image/svg');
-const { log, logTypes } = require('../util/log');
 const params = require('../params');
 
 const generateOCRImage = async (processData, frameImageBuffer) => {
@@ -64,9 +63,12 @@ const getFrameImageFinal = async (frame, frameImageBuffer) => {
 }
 
 const process = async (processData) => {
+    const { filePart, page, frame } = processData.getCurrentData();
     try {
-        const { filePart, page, frame } = processData.getCurrentData();
-        log(`Frame ${frame.name}`, 4);
+        processData.progress({
+            frame: `Frame ${frame.name}`,
+            action: `Cropping`
+        });
 
         const pageImage = sharp(page.resizedImageBuffer);
         const frameImageBuffer = await pageImage.extract({
@@ -92,12 +94,16 @@ const process = async (processData) => {
         const destinationFile = path.join(filePart.imageDestinationFolder, frame.name + '.jpg');
         await imageUtil.saveImage(frameImageFinal, destinationFile);
 
+        processData.progress({ action: 'OCR Image' });
         await generateOCRImage(processData, frameImageBuffer);
 
+        processData.progress({ action: 'Countdown' });
         await imageUtil.generateCountDown(processData, frameImageBufferBeforeSave, frame.iconText);
 
+        processData.progressPercent += page.imageFrameProgressIncrement;
+        filePart.totalVideoFrames++;
     } catch (error) {
-        log(`Frame process failed. ${error}`, 4, logTypes.Error);
+        processData.error(`Frame ${frame.name} process failed. ${error}`);
     }
 }
 
