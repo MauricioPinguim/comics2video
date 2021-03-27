@@ -52,20 +52,16 @@ Then use:
 ```javascript
 const Comics2video = require('comics2video'); // Local installation, not available in npmjs.com yet
 
-const source = './path/myComicBook.cbr'; // File or Folder containing the Comic Book files
+const source = './path/myComicBook.cbr'; // File or Folder
 
-const userParameters = {
-	generateVideo : true,
-	ocrEnabled: true,
-	contentProfile: 'complex',
-	readingSpeed: 'normal'
-}; // userParameters is optional, see default values in the next section
+// Optional, see default values in next section
+const userParameters = { };
 
 const comicsConversion = new Comics2video(source, userParameters);
 
 // Follow-up Events, process can take more than 1 minute per page
 comicsConversion.on('progressUpdated', (data) => {
-	// console.log(data.toString()); // Commented out, prefer using the fields in the 'data' object instead
+	//console.log(data.toString()); // Commented out, prefer to use fields in 'data' object
 });
 comicsConversion.on('processCompleted', (data) => {
 	for (const item of data.messages) {
@@ -96,10 +92,7 @@ For each comic book processed, a folder with the same name will be created, cont
 ## Project comics2video
 
 ### Dependencies
-- Extraction from CBR/RAR ([unrar-promise](https://www.npmjs.com/package/unrar-promise)), CBZ/ZIP ([win-7zip](https://www.npmjs.com/package/win-7zip)+[cross-zip](https://www.npmjs.com/package/cross-unzip)) and PDF files ([pdfjs-dist](https://www.npmjs.com/package/pdfjs-dist))
-- Image processing: [sharp](https://www.npmjs.com/package/sharp)
-- OCR: [tesseract.js](https://www.npmjs.com/package/tesseract.js)
-- Video generation: [ffmpeg-static](ffmpeg-static)
+Extraction from CBR/RAR files: [unrar-promise](https://www.npmjs.com/package/unrar-promise), CBZ/ZIP files: [win-7zip](https://www.npmjs.com/package/win-7zip)+[cross-zip](https://www.npmjs.com/package/cross-unzip), PDF files: [pdfjs-dist](https://www.npmjs.com/package/pdfjs-dist), Image processing: [sharp](https://www.npmjs.com/package/sharp), OCR: [tesseract.js](https://www.npmjs.com/package/tesseract.js), Video generation: [ffmpeg-static](https://www.npmjs.com/package/ffmpeg-static)
 
 ### Next steps
 - Make it available as a module at [npmjs.com](https://www.npmjs.com)
