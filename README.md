@@ -26,6 +26,7 @@ npm install
 (Windows only) Select the Comic Book file and drag-and-drop it on the batch file located in the root folder of comics2video:
 
 > 🗋 drop_comics_here.bat
+
 ![Drag-and-drop file to start](./docs/images/drag_drop_process.gif)
 
 To process multiple Comic Book files, put them in a folder and drag-and-drop the folder.
