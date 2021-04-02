@@ -35,10 +35,12 @@ const processFrameVideoTransition = async (processData) => {
         filePart.lastFrameName = filePart.beforeLastFrameName;
     }
 
-    await ffmpeg.generatePageTransition(processData,
-        filePart.lastFrameName,
-        frame.name,
-        frame.transition);
+    if (filePart.lastFrameName) {
+        await ffmpeg.generatePageTransition(processData,
+            filePart.lastFrameName,
+            frame.name,
+            frame.transition);
+    }
 }
 
 const processFrameVideo = async (processData) => {

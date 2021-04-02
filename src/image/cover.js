@@ -160,15 +160,17 @@ const addCoverPages = (filePart) => {
         coverSubtitle = `${filePart.pages.length} page${filePart.pages.length > 1 ? 's' : ''}`;
     }
 
-    filePart.pages.unshift(
-        newCoverPage({
-            number: firstPage.number,
-            name: firstPage.number.toString().padStart(3, '0'),
-            title: filePart.title,
-            subtitle: coverSubtitle,
-            coverType: coverTypes.FrontCover
-        })
-    );
+    if (!params.systemParams.skipFrontCover) {
+        filePart.pages.unshift(
+            newCoverPage({
+                number: firstPage.number,
+                name: firstPage.number.toString().padStart(3, '0'),
+                title: filePart.title,
+                subtitle: coverSubtitle,
+                coverType: coverTypes.FrontCover
+            })
+        );
+    }
 
     filePart.pages.push(
         newCoverPage({

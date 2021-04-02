@@ -50,6 +50,7 @@ const systemParams = {
     coverDuration: 10,
     pagesPerFilePart: 25,
     maximumPagesWithoutSplit: 30, // Modern comic books usually have a little more than 25 pages, so 30 is a more practical threshold to start the division
+    skipFrontCover: false,
     jpegOutputQuality: 50,
     jpegOCROutputQuality: 80,
     videoFrameRate: 8,
