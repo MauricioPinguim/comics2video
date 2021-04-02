@@ -5,11 +5,11 @@ const doublePageWidthRatio = 1 / 10 * 19;
 const contentProfiles = {
     simpleContent: {
         name: 'simple',
-        defaultDuration: 15,
+        defaultDuration: 20,
         ocrTextLengthMin: 0,
-        ocrTextLengthMinDuration: 5,
+        ocrTextLengthMinDuration: 9,
         ocrTextLengthMax: 300,
-        ocrTextLengthMaxDuration: 18
+        ocrTextLengthMaxDuration: 23
     },
     complexContent: {
         name: 'complex',
@@ -47,7 +47,7 @@ const systemParams = {
     screenDoublePageWidth: Math.ceil(width * doublePageWidthRatio),
     screenDoublePageFirstHalf: Math.ceil(width * doublePageWidthRatio) - width,
     ocrResizeRatio: .65,
-    coverDuration: 13,
+    coverDuration: 10,
     pagesPerFilePart: 25,
     maximumPagesWithoutSplit: 30, // Modern comic books usually have a little more than 25 pages, so 30 is a more practical threshold to start the division
     jpegOutputQuality: 50,

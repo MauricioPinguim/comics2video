@@ -62,11 +62,11 @@ const comicsConversion = new Comics2video(source, userParameters);
 
 // Follow-up Events, process can take more than 1 minute per page
 comicsConversion.on('progressUpdated', (data) => {
-	//console.log(data.toString()); // Commented out, prefer to use fields in 'data' object
+	console.log(data.toString()); // Too many messages, prefer using fields in 'data' object
 });
 comicsConversion.on('processCompleted', (data) => {
 	for (const item of data.messages) {
-		console.log(`${item.messageType} ► ${item.message}`); // Only important result messages
+		console.log(`${item.messageType} ► ${item.message}`); // Only result messages
 	}
 });
 
