@@ -3,7 +3,6 @@ const path = require('path');
 const { log, enableFormattedLog } = require('../terminal/basicLog');
 
 const availableFeatures = {
-    nodeModules: false,
     basicDependencies: false,
     extractionFromZIP: false,
     extractionFromRAR: false,
@@ -88,27 +87,15 @@ const checkBasicDepencencies = () => {
     }
 }
 
-const checkDependenciesFolder = () => {
-    const folder = path.join(__dirname, '../../node_modules');
-
-    return availableFeatures.nodeModules = fs.existsSync(folder);
-}
-
 const showDependenciesMessage = () =>
 {
-    if (!availableFeatures.nodeModules) {
-        log('\nAll the required module dependencies for comics2video are missing');
-        showInstallMessage();
-    } else if (!availableFeatures.basicDependencies) {
+    if (!availableFeatures.basicDependencies) {
         log('\nThe basic required module dependencies for comics2video are missing', 'warning');
         showInstallMessage();
     }
 }
 
 const checkDependencies = () => {
-    if (!checkDependenciesFolder()) {
-        return false;
-    }
     if (!checkBasicDepencencies()) {
         return false;
     }
