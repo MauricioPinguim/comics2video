@@ -15,8 +15,8 @@ For Windows and macOS:
 1. Download the package suitable for your Operating System:
 	- [comics2video 2.0.0 for Windows](https://github.com/MauricioPinguim/comics2video/releases/download/v2.0.0/comics2video_windows_v2-0-0.zip)
 	- [comics2video 2.0.0 for macOS](https://github.com/MauricioPinguim/comics2video/releases/download/v2.0.0/comics2video_macOS_v2-0-0.zip)
-2. Extract the file and open the executable file: ![comics2video](./docs/images/comics2video_executable_small.png)
-3. Use the screen below to select the Comic Book file in your file system and start the conversion
+2. Extract the file and open the executable: ![comics2video executable](./docs/images/comics2video_executable_small.png)
+3. Use the app to select the Comic Book file in your file system and start the conversion
 ![comics2video main screen](./docs/images/comics2video_2-0-0.png)
 
 ## Developer usage
