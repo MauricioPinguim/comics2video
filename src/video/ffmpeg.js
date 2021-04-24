@@ -44,7 +44,7 @@ const joinVideos = async (processData, joinFile) => {
     let paramArray = ['-f', 'concat', '-safe', '0', '-i', joinFile, '-c', 'copy', '-y', output1];
     await spawn(ffmpegFullPath, paramArray);
 
-    // Convert to final video specs (same framerate) and remove audio track
+    // Convert to final video specs: Target framerate and disable audio track
     const videoQuality = `${params.systemParams.videoQualityMBPS}M`;
     paramArray = ['-f', 'lavfi', '-i', 'anullsrc', '-i', output1, '-c:v', 'copy', '-c:a', 'aac', '-map', '0:a', '-map', '1:v', '-shortest', '-c:v', 'libx264', '-b:v', videoQuality, '-maxrate', videoQuality, '-minrate', videoQuality, '-y', output2];
     await spawn(ffmpegFullPath, paramArray);

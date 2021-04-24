@@ -48,8 +48,7 @@ const systemParams = {
     screenDoublePageFirstHalf: Math.ceil(width * doublePageWidthRatio) - width,
     ocrResizeRatio: .65,
     coverDuration: 10,
-    pagesPerFilePart: 25,
-    maximumPagesWithoutSplit: 30, // Modern comic books usually have a little more than 25 pages, so 30 is a more practical threshold to start the division
+    pagesPerFilePart: 30,
     skipFrontCover: false,
     jpegOutputQuality: 50,
     jpegOCROutputQuality: 80,
@@ -61,7 +60,6 @@ const systemParams = {
 
 const userParams = {
     generateVideo: true,
-    ocrEnabled: true,
     contentProfile: contentProfiles.complexContent,
     readingSpeed: readingSpeeds.normal
 }
@@ -75,19 +73,6 @@ const setGenerateVideo = (generateVideo) => {
             userParams.generateVideo = false;
         } else if (value === 'true') {
             userParams.generateVideo = true;
-        }
-    }
-}
-
-const setOcrEnabled = (ocrEnabled) => {
-    if (typeof ocrEnabled === 'boolean') {
-        userParams.ocrEnabled = ocrEnabled;
-    } else if (typeof ocrEnabled === 'string') {
-        const value = ocrEnabled.trim().toLowerCase();
-        if (value === 'false') {
-            userParams.ocrEnabled = false;
-        } else if (value === 'true') {
-            userParams.ocrEnabled = true;
         }
     }
 }
@@ -128,7 +113,6 @@ const setParamValues = (paramValues) => {
     }
 
     setGenerateVideo(paramValues.generateVideo);
-    setOcrEnabled(paramValues.ocrEnabled);
     setContentProfile(paramValues.contentProfile);
     setReadingSpeed(paramValues.readingSpeed);
 }
@@ -136,7 +120,7 @@ const setParamValues = (paramValues) => {
 module.exports = {
     contentProfiles,
     readingSpeeds,
-    systemParams,
     userParams,
-    setParamValues,
+    systemParams,
+    setParamValues
 }

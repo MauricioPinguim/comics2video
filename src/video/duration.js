@@ -1,5 +1,5 @@
-const dependencies = require('../util/dependencies');
 const params = require("../params");
+const ocrTesseract = require('../ocr/ocrTesseract');
 
 const getDurationDefinition = () => {
     const durationDefinition = {
@@ -42,14 +42,9 @@ const setFrameDuration = async (processData) => {
         return frame.duration = durationDefinition.coverDuration - durationDefinition.countdownStart;
     }
 
-    if (params.userParams.ocrEnabled) {
-        if (dependencies.availableFeatures.ocr) {
-            processData.progress({ action: `Performing OCR` });
-            const validTextLength = await require('../ocr/ocrTesseract').getValidTextLength(frame.ocrImage);
-            if (validTextLength != -1) {
-                return frame.duration = calculateDuration(validTextLength, durationDefinition) - durationDefinition.countdownStart;
-            }
-        }
+    const validTextLength = await ocrTesseract.getValidTextLength(frame.ocrImage);
+    if (validTextLength != -1) {
+        return frame.duration = calculateDuration(validTextLength, durationDefinition) - durationDefinition.countdownStart;
     }
 
     frame.duration = durationDefinition.defaultDuration - durationDefinition.countdownStart;

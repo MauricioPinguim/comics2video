@@ -1,6 +1,5 @@
 const term = require('terminal-kit').terminal;
 const { userParams, systemParams } = require('../params');
-const dependencies = require('../util/dependencies');
 const filedir = require('../util/filedir');
 const terminalElaborate = require('./terminalElaborate');
 const terminalBasic = require('./terminalBasic');
@@ -25,15 +24,7 @@ const showSource = () => {
 }
 
 const showAppTitle = () => {
-    const appTitle = 'comics2video';
-    const subtitle = 'Converts Comic Book files to videos';
-    let title = `${appTitle} - ${subtitle}`;
-
-    if (dependencies.availableFeatures.asciiTitle) {
-        title = require('./asciiTitle').getAsciiTitle(appTitle, subtitle, title, term.width);
-    }
-
-    term.green(`\n${title}\n\n`);
+    term.green(`\ncomics2video - Converts Comic Book files to videos\n\n`);
     term.styleReset();
 }
 
@@ -98,7 +89,7 @@ const step = async (stepData) => {
 
 const quit = () => {
     term.eraseDisplayBelow();
-    term.yellow("\ncomics2video process canceled\n");
+    term.yellow("\ncomics2video process canceled\n\n");
     term.hideCursor();
 }
 
@@ -164,34 +155,6 @@ const stepContentProfile = async () => {
     }
 }
 
-const stepOCREnabled = async () => {
-    const stepData = {
-        defaultValue: userParams.ocrEnabled,
-        title: 'Use OCR?',
-        menuOptions: [
-            {
-                index: 0,
-                text: 'YES',
-                description: 'Frames with more text will last longer',
-                value: true
-            },
-            {
-                index: 1,
-                text: 'NO',
-                description: 'Fixed duration for all frames',
-                value: false
-            }]
-    }
-
-    const response = await step(stepData);
-    if (!response) {
-        quit();
-    } else {
-        userParams.ocrEnabled = response.value;
-        await stepContentProfile();
-    }
-}
-
 const stepGenerateVideo = async () => {
     const stepData = {
         defaultValue: userParams.generateVideo,
@@ -217,7 +180,7 @@ const stepGenerateVideo = async () => {
     } else {
         userParams.generateVideo = response.value;
         if (response.value) {
-            await stepOCREnabled();
+            await stepContentProfile();
         } else {
             await startProcess();
         }
@@ -260,13 +223,13 @@ const stepStartDefault = async () => {
 
 const start = async () => {
     if (systemParams.disableTerminalElaborate) {
-        await terminalBasic.start(source);
+        await terminalBasic.start();
         return;
     }
 
-    getSource();
     term.windowTitle('comics2video');
     term.hideCursor();
+    getSource();
 
     await stepStartDefault();
 }

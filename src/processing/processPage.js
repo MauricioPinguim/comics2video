@@ -72,7 +72,6 @@ const preparePage = async (processData) => {
     const image = sharp(page.source);
 
     if (page.height > page.width) {
-        // Single page
         page.resizedWidth = params.systemParams.screenWidth;
         page.resizedHeight = Math.floor(page.height * (params.systemParams.screenWidth / page.width));
         page.isSplitted = false;
@@ -102,23 +101,16 @@ const preparePage = async (processData) => {
 
 const process = async (processData) => {
     const { page } = processData.getCurrentData();
-    try {
-        if (page.coverType) {
-            await cover.generateCover(processData);
-        } else {
-            processData.progress({
-                page: `Page ${page.number}`,
-                action: `Calculating Frames`
-            });
-            await preparePage(processData);
 
-            while (page.selectNextFrame()) {
-                await processFrame.process(processData);
-            }
-            page.resizedImageBuffer = null;
+    if (page.coverType) {
+        await cover.generateCover(processData);
+    } else {
+        await preparePage(processData);
+
+        while (page.selectNextFrame()) {
+            await processFrame.process(processData);
         }
-    } catch (error) {
-        processData.error(`Page ${page.number} process failed. ${error}`);
+        page.resizedImageBuffer = null;
     }
 }
 

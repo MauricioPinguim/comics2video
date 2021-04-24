@@ -13,11 +13,6 @@ const generateCover = async (processData) => {
     const coverTempLocation = file.tempFolders.root;
     const isFrontCover = (page.coverType === coverTypes.FrontCover);
 
-    processData.progress({
-        page: `${isFrontCover ? 'Front' : 'Back'} cover`,
-        action: 'Image'
-    });
-
     const coverImage = await sharp({
         create: {
             width: params.systemParams.screenWidth,
@@ -61,9 +56,8 @@ const generateCover = async (processData) => {
     page.frames.push(frame);
     page.selectNextFrame();
 
-    processData.progress({ action: `Countdown` });
     await imageUtil.generateCountDown(processData, coverImageBufferBeforSave);
-    processData.progressPercent += filePart.imagePageProgressIncrement;
+    processData.increasePercentImage(filePart.imagePageProgressIncrement);
 }
 
 const generateCoverThumbnail = async (destinationFolder, pageSource) => {
@@ -131,7 +125,10 @@ const prepareCoverImages = async (processData) => {
     const { file } = processData.getCurrentData();
     const firstPage = file.sourcePages[0];
 
-    processData.progress({ action: `Processing cover images` });
+    processData.progress({
+        status: `Processing cover images`,
+        statusType: 'image'
+    });
 
     await generateCoverBackground(file.tempFolders.root, firstPage.source);
     await generateCoverThumbnail(file.tempFolders.root, firstPage.source);

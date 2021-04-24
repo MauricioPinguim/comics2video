@@ -2,25 +2,18 @@ module.exports = class ProgressData {
     constructor() {
         this.file = '';
         this.filePart = '';
-        this.element = '';
-        this.page = '';
-        this.frame = '';
-        this.action = '';
-
-        this.percent = 0;
+        this.status = '';
+        this.statusType = '';
+        this.percentImage = 0;
+        this.percentVideo = 0;
     }
 
-    toString(levelSeparator = ' \\ ', actionSeparator = ' ► ') {
-        let result = '';
-
-        result += this.file ? this.file : '';
-        result += this.filePart ? levelSeparator + this.filePart : '';
-        result += this.element ? levelSeparator + this.element : '';
-        result += this.page ? levelSeparator + this.page : '';
-        result += this.frame ? levelSeparator + this.frame : '';
-        result += this.action ? actionSeparator + this.action : '';
-
-        result += `  ${Math.floor(this.percent * 10, 1) / 10}%`;
+    toString() {
+        let result = `${this.file}`
+        result += this.filePart ? ` | ${this.filePart}` : '';
+        result += ` | ${this.statusType}: ${this.status}`;
+        result += ` | images=${Math.floor(this.percentImage * 10, 1) / 10}%,`;
+        result += ` video=${Math.floor(this.percentVideo * 10, 1) / 10}%`;
 
         return result;
     }
@@ -28,45 +21,21 @@ module.exports = class ProgressData {
     update(updatedFields) {
         if (updatedFields.file) {
             this.file = updatedFields.file;
-            this.clearAfter(1);
         }
-        if (updatedFields.filePart) {
+        if (updatedFields.filePart != undefined) {
             this.filePart = updatedFields.filePart;
-            this.clearAfter(2);
         }
-        if (updatedFields.element) {
-            this.element = updatedFields.element;
-            this.clearAfter(3);
+        if (updatedFields.status) {
+            this.status = updatedFields.status;
         }
-        if (updatedFields.page) {
-            this.page = updatedFields.page;
-            this.clearAfter(4);
+        if (updatedFields.statusType) {
+            this.statusType = updatedFields.statusType;
         }
-        if (updatedFields.frame) {
-            this.frame = updatedFields.frame;
-            this.clearAfter(5);
+        if (updatedFields.percentImage != undefined) {
+            this.percentImage = updatedFields.percentImage;
         }
-        if (updatedFields.action) {
-            this.action = updatedFields.action;
+        if (updatedFields.percentVideo != undefined) {
+            this.percentVideo = updatedFields.percentVideo;
         }
-        if (updatedFields.percent) {
-            this.percent = updatedFields.percent;
-        }
-    }
-
-    clearAfter(level) {
-        if (level <= 1) {
-            this.filePart = '';
-        }
-        if (level <= 2) {
-            this.element = '';
-        }
-        if (level <= 3) {
-            this.page = '';
-        }
-        if (level <= 4) {
-            this.frame = '';
-        }
-        this.action = '';
     }
 }

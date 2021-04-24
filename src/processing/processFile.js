@@ -38,7 +38,7 @@ const addPages = (processData, filePart) => {
 
 const addFileParts = async (processData) => {
     const { file } = processData.getCurrentData();
-    file.isMultiPart = file.sourcePages.length > params.systemParams.maximumPagesWithoutSplit;
+    file.isMultiPart = file.sourcePages.length > params.systemParams.pagesPerFilePart;
     file.filePartsTotal = file.isMultiPart ? Math.ceil(file.sourcePages.length / params.systemParams.pagesPerFilePart) : 1;
 
     for (let filePartNumber = 1; filePartNumber <= file.filePartsTotal; filePartNumber++) {
@@ -56,12 +56,9 @@ const addFileParts = async (processData) => {
 
 const removeTempFolder = (processData) => {
     const { file } = processData.getCurrentData();
-    try {
-        if (file.tempFolderCreated && !params.systemParams.keepTempFolder) {
-            filedir.removeFolder(file.tempFolders.root);
-        }
-    } catch (error) {
-        processData.warning(`Unable to remove temp folder ${file.tempFolders.root}. Folder must be deleted manually`);
+
+    if (file.tempFolderCreated && !params.systemParams.keepTempFolder) {
+        filedir.removeFolder(file.tempFolders.root);
     }
 }
 
@@ -69,25 +66,42 @@ const process = async (processData) => {
     const { file } = processData.getCurrentData();
     try {
         processData.progress({
-            file: `File '${file.sourceFileName}'`,
-            action: `Creating folders`
+            file: file.sourceFileName,
+            filePart: '',
+            status: `Creating folders`,
+            statusType: 'folder',
+            percentImage: 0,
+            percentVideo: 0
         });
 
-        filedir.setFolderStructure(file);
+        if (!filedir.setFolderStructure(file)) {
+            return processData.progress({
+                status: `Path+Filename is too long`,
+                statusType: 'error'
+            });
+        }
+
         if (!filedir.createFolderStructure(file)) {
-            return processData.warning(`Destination folder for '${file.sourceFileName}' already exists`);
+            return processData.progress({
+                status: `Destination folder already exists`,
+                statusType: 'error'
+            });
         }
 
         if (!await extract.extractFile(processData)) {
-            return processData.error(`Unable to extract file '${file.sourceFileName}'`);
+            return processData.progress({
+                status: `Unable to extract file`,
+                statusType: 'error'
+            });
         }
 
         await analyzePages(file);
         if (file.sourcePages.length === 0) {
-            return processData.error(`No valid page file found in file '${file.sourceFileName}'`);
+            return processData.progress({
+                status: `No valid page file found`,
+                statusType: 'error'
+            });
         }
-
-        file.startedOK = true;
 
         await addFileParts(processData);
 
@@ -96,19 +110,14 @@ const process = async (processData) => {
         while (file.selectNextFilePart()) {
             await processFilePart.process(processData);
         }
-
-        file.completedOK = file.fileParts.every(part => part.imageOK && part.videoOK);
     } catch (error) {
-        processData.error(`'${file.sourceFileName}' file process failed. ${error}`);
+        return processData.progress({
+            status: `Process failed - ${error}`,
+            statusType: 'error',
+            percentImage: 0,
+            percentVideo: 0
+        });
     } finally {
-        if (!file.startedOK) {
-            processData.error(`File '${file.sourceFileName}' not processed due to errors`);
-        } else if (!file.completedOK) {
-            processData.error(`File '${file.sourceFileName}' processed, with errors`);
-        } else {
-            processData.success(`File '${file.sourceFileName}' processed successfully`);
-        }
-
         await removeTempFolder(processData);
     }
 }

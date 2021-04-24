@@ -5,7 +5,6 @@ const ffmpeg = require('./ffmpeg');
 
 const processFrameVideoCountDown = async (processData) => {
     const { filePart, file, frame } = processData.getCurrentData();
-    processData.progress({ action: `Countdown` });
 
     for (const name of frame.countdownImages) {
         await ffmpeg.generateStill(processData,
@@ -13,7 +12,7 @@ const processFrameVideoCountDown = async (processData) => {
             name,
             file.tempFolders.videoCountdown,
             1);
-        processData.progressPercent += filePart.videoFrameProgressIncrement;
+        processData.increasePercentVideo(filePart.videoFrameProgressIncrement);
     }
 }
 
@@ -24,7 +23,6 @@ const processFrameVideoTransition = async (processData) => {
         return;
     }
 
-    processData.progress({ action: `Transition` });
     if (frame.transition === 'slideright+slideup') {
         // Two-step transition
         await ffmpeg.generatePageTransition(processData,
@@ -47,12 +45,6 @@ const processFrameVideo = async (processData) => {
     const { file, filePart, page, frame } = processData.getCurrentData();
 
     try {
-        processData.progress({
-            page: `Page ${page.number}`,
-            frame: `Frame ${frame.name}`,
-            action: 'Process Frame'
-        });
-
         await processFrameVideoTransition(processData);
 
         await duration.setFrameDuration(processData);
@@ -63,7 +55,7 @@ const processFrameVideo = async (processData) => {
             file.tempFolders.videoFrames,
             frame.duration);
 
-        processData.progressPercent += filePart.videoFrameProgressIncrement;
+        processData.increasePercentVideo(filePart.videoFrameProgressIncrement);
 
         await processFrameVideoCountDown(processData);
 
@@ -76,54 +68,51 @@ const processFrameVideo = async (processData) => {
 const processFinalVideo = async (processData) => {
     const { file, filePart } = processData.getCurrentData();
 
-    if (filePart.videoSequence.length === 0) {
-        return processData.error(`No valid video files to be joined for '${filePart.outputFile}'`);
-    }
-    processData.progressPercent = 99.9;
-    const tmpFilePart = processData.progressData.filePart
     processData.progress({
-        file: processData.progressData.file, // Force clear the remaining levels
-        filePart: tmpFilePart,
-        action: 'Writing video file (this can take several minutes)'
+        status: 'Finishing (This can take some minutes)',
+        statusType: 'wait',
+        percentVideo: 99.9
     });
+
     const joinVideoFile = path.join(file.tempFolders.videoJoin, `video_sequence${filePart.number}.txt`);
     fs.writeFileSync(joinVideoFile, filePart.videoSequence.join('\n'));
+    
     try {
         await ffmpeg.joinVideos(processData, joinVideoFile);
 
-        filePart.videoOK = true;
-        processData.progressPercent = 100;
         processData.progress({
-            action: 'Video generated'
+            status: 'Video generated successfully',
+            statusType: 'success',
+            percentVideo: 100
         });
     } catch (error) {
-        return processData.error(`Unable to join video files for '${filePart.outputFile}' : ${error}`);
+        processData.progress({
+            status: `Unable to create video file`,
+            statusType: 'error',
+            percentVideo: 0
+        });
     }
 }
 
 const process = async (processData) => {
     const { filePart } = processData.getCurrentData();
 
-    try {
-        processData.progressPercent = 0;
-        processData.progress({
-            element: `Video`,
-            action: `Processing Pages`
-        });
-        filePart.deselectPage();
+    processData.progress({
+        status: `Generating Video`,
+        statusType: 'video',
+        percentVideo: 0
+    });
 
-        filePart.videoFrameProgressIncrement = 1 / filePart.totalVideoFrames * 100;
+    filePart.videoFrameProgressIncrement = 1 / filePart.totalVideoFrames * 100;
 
-        while (filePart.selectNextPage()) {
-            while (filePart.currentPage().selectNextFrame()) {
-                await processFrameVideo(processData);
-            }
+    filePart.deselectPage();
+    while (filePart.selectNextPage()) {
+        while (filePart.currentPage().selectNextFrame()) {
+            await processFrameVideo(processData);
         }
-
-        await processFinalVideo(processData);
-    } catch (error) {
-        processData.error(`Video '${filePart.outputFile}' generation failed. ${error}`);
     }
+
+    await processFinalVideo(processData);
 }
 
 module.exports = { process }

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <title>comics2video</title>
+    <link rel="stylesheet" href="../../../node_modules/photonkit/dist/css/photon.css">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <header class="toolbar toolbar-header">
+        <div class="source-selection">
+            <span class="source-selection-label">File/Folder: </span>
+            <span class="source-selection-value-none" id="lblSource">(None selected)</span>
+        </div>
+        <div class="toolbar-actions">
+            <button class="btn btn-default" id="btnOpenFile">
+                <span class="icon icon-book"></span>
+                <span>Select Comic Book file</span>
+            </button>
+            <button class="btn btn-default" id="btnOpenFolder">
+                <span class="icon icon-folder"></span>
+                <span>Select folder</span>
+            </button>
+            <button class="btn btn-default" id="btnPaste">
+                <span class="icon icon-clipboard"></span>
+                <span>Paste file</span>
+            </button>
+            <button class="btn" id="btnStart" disabled>
+                <span>Start conversion</span>
+            </button>
+            <button class="btn btn-default pull-right" id="btnOptions">
+                <span class="icon icon-cog"></span>
+                <span>Options</span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <table id="tblProgressTemplate" class="invisible">
+            <thead>
+                <tr>
+                    <th style="width: 55%">File</th>
+                    <th style="width: 27%">Status</th>
+                    <th style="width: 9%">Images</th>
+                    <th style="width: 9%">Video</th>
+                </tr>
+            </thead>
+            <tbody id="tblProgressRowsTemplate">
+                <tr>
+                    <td>
+                        <span class="progress-file-part"></span>
+                        <span class="icon icon-book icon-color-normal"></span>
+                        <span class="progress-file"></span>
+                    </td>
+                    <td>
+                        <span class="progress-status-icon icon"></span>
+                        <span class="progress-status"></span>
+                    </td>
+                    <td>
+                        <progress class="progress-image invisible" value="0" max="100"></progress>
+                    </td>
+                    <td>
+                        <progress class="progress-video invisible" value="0" max="100"></progress>
+                    </td>
+                </tr>
+                <tr>
+            </tbody>
+        </table>
+
+        <table class="table-striped invisible" id="tblProgress">
+            <thead>
+                <tr>
+                    <th style="width: 55%">File</th>
+                    <th style="width: 27%">Status</th>
+                    <th style="width: 9%">Images</th>
+                    <th style="width: 9%">Video</th>
+                </tr>
+            </thead>
+            <tbody id="tblProgressRows">
+            </tbody>
+        </table>
+    </main>
+
+    <footer class="toolbar toolbar-footer">
+        <div class="toolbar-actions">
+            <button class="btn btn-default pull-right" id="btnAboutAuthor">
+                <span class="icon icon-twitter"></span>
+                <span>Contact</span>
+            </button>
+            <button class="btn btn-default pull-right" id="btnAboutProject">
+                <span class="icon icon-github"></span>
+                <span>Project comics2video</span>
+            </button>
+            <button class="btn btn-default pull-right" id="btnAbout">
+                <span class="icon icon-info-circled"></span>
+                <span>About</span>
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        require("./mainWindow.js");
+    </script>
+</body>
+</html>

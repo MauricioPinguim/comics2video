@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <title>comics2video - Options</title>
+    <link rel="stylesheet" href="../../../node_modules/photonkit/dist/css/photon.css">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <main>
+        <div class="toolbar toolbar-header" id="optionsPanel">
+            <div class="toolbar-actions">
+                <p class="option-label">
+                    <span class="icon icon-video"></span>
+                    Generate Video
+                </p>
+                <div class="btn-group">
+                    <button class="btn btn-mini btn-default" id="btnYes">Yes</button>
+                    <button class="btn btn-mini btn-default" id="btnNo">No</button>
+                </div>
+                <span class="option-description" id="lblGenerateVideo"></span>
+            </div>
+            <div class="toolbar-actions">
+                <p class="option-label">
+                    <span class="icon icon-book"></span>
+                    Content Profile
+                </p>
+                <div class="btn-group">
+                    <button class="btn btn-mini btn-default" id="btnComplex">Complex</button>
+                    <button class="btn btn-mini btn-default" id="btnSimple">Simple</button>
+                </div>
+                <span class="option-description" id="lblContentProfile"></span>
+            </div>
+            <div class="toolbar-actions">
+                <p class="option-label">
+                    <span class="icon icon-fast-forward"></span>
+                    Reading Speed
+                </p>
+                <div class="btn-group">
+                    <button class="btn btn-mini btn-default" id="btnSlow">Slow</button>
+                    <button class="btn btn-mini btn-default" id="btnNormal">Normal</button>
+                    <button class="btn btn-mini btn-default" id="btnFast">Fast</button>
+                </div>
+                <span class="option-description" id="lblReadingSpeed"></span>
+            </div>
+        </div>
+
+        <div class="toolbar toolbar-header" id="optionsPanelButtons">
+            <button class="btn btn-mini btn-primary pull-right" id="btnOK">OK</button>
+            <button class="btn btn-mini btn-default pull-right" id="btnCancel">Cancel</button>
+        </div>
+    </main>
+
+    <script>
+        require("./optionWindow.js");
+    </script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+body {
+  user-select: none;
+}
+
+header {
+  z-index: -1;
+}
+
+.toolbar-header {
+  padding: 12px;
+}
+
+.btn .icon {
+  margin-right: 6px;
+  color: #3E3E3E;
+}
+
+.source-selection {
+  margin: 12px 9px 15px 9px;
+}
+
+.source-selection-label {
+  font-weight: bold;
+}
+
+.source-selection-value {
+  margin-left: 3px;
+}
+
+.source-selection-value-none {
+  margin-left: 3px;
+  font-style: italic;
+}
+
+table {
+  padding: 0px;
+  table-layout: fixed;
+}
+
+table .icon {
+  margin-right: 3px;
+}
+
+table tr {
+  height: 35px;
+}
+
+progress {
+  width: 100%;
+  height: 16px;
+}
+
+.icon-color-normal {
+  color: #666666;
+}
+
+.icon-color-error {
+  color: #C71F25;
+}
+
+.icon-color-success {
+  color: #3FA847;
+}
+
+footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  height: 45px;
+  padding-right: 10px;
+}
+
+footer .btn {
+  margin-top: 5px;
+}
+
+#lblVersion {
+  margin: 8px 6px 0px 0px;
+}
+
+.invisible {
+  display: none;
+}
+
+.scroll-vertical {
+  overflow-x: hidden; 
+  overflow-y: scroll;
+}
+
+#optionsPanel {
+  padding: 0px 10px 12px 10px;
+}
+
+#optionsPanelButtons {
+  padding: 15px 15px 0px 0px;
+  height: 500px; 
+}
+
+#optionsPanelButtons .btn {
+  width: 100px;
+  margin-left: 13px;
+}
+
+.option-label {
+  margin: 10px 0px 3px 4px;
+}
+
+.option-label .icon {
+  margin-right: 4px;
+  color: #3E3E3E;
+}
+
+.option-description {
+  margin: 5px 0px 0px 5px;
+}
+
+.btn-group .btn {
+  width: 90px;
+}

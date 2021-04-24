@@ -10,7 +10,7 @@ const getCover = (title, subTitle, isFrontCover) => {
     const topLine2 = topWithMargin + Math.floor((params.systemParams.screenHeight - topWithMargin) * (isFrontCover ? .66 : .54));
 
     return `
-        <text fill="#FFFFFF77" x="10" y="${params.systemParams.screenHeight - 15}"  font-family="Arial" font-size="22" text-anchor="start" xml:space="preserve">Generated with comics2video</text>
+        <text fill="#FFFFFF77" x="10" y="${params.systemParams.screenHeight - 15}"  font-family="Arial" font-size="23" text-anchor="start" xml:space="preserve">Generated with comics2video</text>
         <text fill="#FFFFFF" x="${params.systemParams.screenCenterX}" y="${topLine1}" font-family="Arial" font-size="40" dominant-baseline="middle" text-anchor="middle" xml:space="preserve">${title}</text>
         <text fill="#FFFFFF" x="${params.systemParams.screenCenterX}" y="${topLine2}" font-family="Arial" font-size="30" dominant-baseline="middle" text-anchor="middle" xml:space="preserve">${subTitle}</text>
         `;

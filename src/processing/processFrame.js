@@ -5,7 +5,7 @@ const svg = require('../image/svg');
 const params = require('../params');
 
 const generateOCRImage = async (processData, frameImageBuffer) => {
-    if (!params.userParams.generateVideo || !params.userParams.ocrEnabled) {
+    if (!params.userParams.generateVideo) {
         return;
     }
 
@@ -64,47 +64,37 @@ const getFrameImageFinal = async (frame, frameImageBuffer) => {
 
 const process = async (processData) => {
     const { filePart, page, frame } = processData.getCurrentData();
-    try {
-        processData.progress({
-            frame: `Frame ${frame.name}`,
-            action: `Cropping`
-        });
 
-        const pageImage = sharp(page.resizedImageBuffer);
-        const frameImageBuffer = await pageImage.extract({
-            left: frame.left,
-            top: frame.top,
-            width: params.systemParams.screenWidth,
-            height: params.systemParams.screenHeight
-        }).toBuffer();
-        const frameImage = sharp(frameImageBuffer);
+    const pageImage = sharp(page.resizedImageBuffer);
+    const frameImageBuffer = await pageImage.extract({
+        left: frame.left,
+        top: frame.top,
+        width: params.systemParams.screenWidth,
+        height: params.systemParams.screenHeight
+    }).toBuffer();
+    const frameImage = sharp(frameImageBuffer);
 
-        let compositeSvg = svg.getIconText(frame.iconText);
-        if (frame.number === 1 && frame.halfNumber !== 2) {
-            compositeSvg += svg.getTitle(page.title);
-        }
-        compositeSvg += svg.getLine(frame);
-        const compositeBuffer = svg.getSVGBuffer(compositeSvg);
-        await frameImage.composite([{ input: compositeBuffer }]);
-
-        const frameImageFinal = await getFrameImageFinal(frame, await frameImage.toBuffer());
-
-        // Keep a version before save, the Sharp Object is modified after saving
-        const frameImageBufferBeforeSave = await frameImageFinal.toBuffer();
-        const destinationFile = path.join(filePart.imageDestinationFolder, frame.name + '.jpg');
-        await imageUtil.saveImage(frameImageFinal, destinationFile);
-
-        processData.progress({ action: 'OCR Image' });
-        await generateOCRImage(processData, frameImageBuffer);
-
-        processData.progress({ action: 'Countdown' });
-        await imageUtil.generateCountDown(processData, frameImageBufferBeforeSave, frame.iconText);
-
-        processData.progressPercent += page.imageFrameProgressIncrement;
-        filePart.totalVideoFrames++;
-    } catch (error) {
-        processData.error(`Frame ${frame.name} process failed. ${error}`);
+    let compositeSvg = svg.getIconText(frame.iconText);
+    if (frame.number === 1 && frame.halfNumber !== 2) {
+        compositeSvg += svg.getTitle(page.title);
     }
+    compositeSvg += svg.getLine(frame);
+    const compositeBuffer = svg.getSVGBuffer(compositeSvg);
+    await frameImage.composite([{ input: compositeBuffer }]);
+
+    const frameImageFinal = await getFrameImageFinal(frame, await frameImage.toBuffer());
+
+    // Keep a version before saving because the Sharp object will be corrupted after saving
+    const frameImageBufferBeforeSave = await frameImageFinal.toBuffer();
+    const destinationFile = path.join(filePart.imageDestinationFolder, frame.name + '.jpg');
+    await imageUtil.saveImage(frameImageFinal, destinationFile);
+
+    await generateOCRImage(processData, frameImageBuffer);
+
+    await imageUtil.generateCountDown(processData, frameImageBufferBeforeSave, frame.iconText);
+
+    processData.increasePercentImage(page.imageFrameProgressIncrement);
+    filePart.totalVideoFrames++;
 }
 
 module.exports = { process }

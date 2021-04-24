@@ -1,5 +1,5 @@
 /**
- * comics2video - Converts Comic Book files to videos to be watched on TV/Video players
+ * comics2video - Converts Comic Book files to videos
  *
  * @author   Maurício Antunes Oliveira <mauricio_pinguim@hotmail.com>
  * @license  Apache-2.0
@@ -8,9 +8,9 @@
  */
 
 const EventEmitter = require('events');
-const params = require('../params');
-const dependencies = require('../util/dependencies');
 const ProgressData = require('./ProgressData');
+const params = require('../params');
+const processComics = require('../processing/processComics');
 
 module.exports = class Comics2video extends EventEmitter {
     constructor(source, paramValues = {}) {
@@ -18,11 +18,7 @@ module.exports = class Comics2video extends EventEmitter {
         this.source = source;
         this.files = [];
         this.currentFileIndex = -1;
-        this.progressPercent = 0;
         this.progressData = new ProgressData();
-        this.summary = {
-            messages: []
-        }
 
         if (!source) {
             throw new Error('Source parameter must be provided');
@@ -32,47 +28,34 @@ module.exports = class Comics2video extends EventEmitter {
     }
 
     async start() {
-        this.summary.startTime = new Date();
-        if (!dependencies.checkDependencies()) {
-            this.error(`comics2video dependencies not installed, run 'npm install' on root directory`);
-            this.finishProcess();
-        } else {
-            await require('../processing/processComics').process(this);
-        }
-    }
-
-    success(message) {
-        this.summary.messages.push({
-            message,
-            messageType: 'success'
-        });
-    }
-
-    warning(message) {
-        this.summary.messages.push({
-            message,
-            messageType: 'warning'
-        });
-    }
-
-    error(message) {
-        this.summary.messages.push({
-            message,
-            messageType: 'error'
-        });
+        await processComics.process(this);
     }
 
     progress(updatedFields) {
-        this.progressData.percent = this.progressPercent;
         this.progressData.update(updatedFields);
-
         this.emit('progressUpdated', this.progressData);
     }
 
-    finishProcess() {
-        this.summary.endTime = new Date();
-        this.summary.elapsedMinutes = ((this.summary.endTime - this.summary.startTime) / 60000).toFixed(1);
-        this.emit('processCompleted', this.summary);
+    increasePercentImage(increaseValue) {
+        this.progressData.percentImage += increaseValue;
+        this.emit('progressUpdated', this.progressData);
+    }
+
+    increasePercentVideo(increaseValue) {
+        this.progressData.percentVideo += increaseValue;
+        if (this.progressData.percentVideo >= 100) {
+            // Before show 100%, stay on 99.9% for the step of writing the final video file
+            this.progressData.percentVideo = 99.9;
+        }
+        this.emit('progressUpdated', this.progressData);
+    }
+
+    finishProcess(resultMessage, resultType) {
+        const resultData = {
+            resultMessage,
+            resultType
+        }
+        this.emit('processCompleted', resultData);
     }
 
     currentFile() {

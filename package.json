@@ -9,24 +9,23 @@
         "email": "mauricio_pinguim@hotmail.com"
     },
     "dependencies": {
-        "deltree": "^1.2.8",
-        "sharp": "^0.27.2"
-    },
-    "optionalDependencies": {
-        "canvas": "^2.7.0",
-        "chalk": "^4.1.0",
         "cross-unzip": "^0.2.1",
+        "deltree": "^1.2.8",
         "ffmpeg-static": "^4.2.7",
-        "figlet": "^1.5.0",
-        "pdfjs-dist": "^2.6.347",
+        "photonkit": "^0.1.2",
+        "sharp": "^0.27.2",
         "spawn-please": "^1.0.0",
-        "terminal-kit": "^2.0.5",
         "tesseract.js": "^2.1.4",
         "unrar-promise": "^2.0.1",
         "win-7zip": "^0.1.1"
     },
+    "devDependencies": {
+        "electron": "^12.0.3",
+        "terminal-kit": "^2.0.5"
+    },
     "deprecated": false,
     "description": "Converts Comic Book files to videos to be watched on TV/Video players",
+    "electron": "^12.0.3",
     "homepage": "https://github.com/MauricioPinguim/comics2video#readme",
     "keywords": [
         "comics",
@@ -46,7 +45,6 @@
         "rar",
         "cbz",
         "zip",
-        "pdf",
         "comics2videos",
         "quadrinhos",
         "hq",
@@ -55,13 +53,14 @@
     "license": "Apache-2.0",
     "main": "./src/classes/Comics2video.js",
     "name": "comics2video",
+    "productName": "comics2video",
     "repository": {
         "type": "git",
         "url": "https://github.com/MauricioPinguim/comics2video.git"
     },
     "scripts": {
-        "start": "node comics2video.js"
+        "start": "electron ./src/gui/app.js"
     },
     "title": "comic2video",
-    "version": "0.6.3"
+    "version": "2.0.0"
 }

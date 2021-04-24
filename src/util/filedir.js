@@ -2,16 +2,21 @@ const deltree = require("deltree");
 const path = require('path');
 const fs = require('fs');
 const File = require('../classes/File')
-const dependencies = require('./dependencies');
 
 const fileExtensions = {
     ZIP: ['.cbz', '.zip'],
-    RAR: ['.cbr', '.rar'],
-    PDF: ['.pdf']
+    RAR: ['.cbr', '.rar']
 }
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.png'];
 
-const entryExists = (entry) => fs.existsSync(entry);
+const entryExists = (entry) => {
+    try {
+        return fs.existsSync(entry);
+    }
+    catch {
+        return false
+    }
+}
 
 const isFolder = (entry) => fs.lstatSync(entry).isDirectory();
 
@@ -36,14 +41,10 @@ const isZIP = (file) => fileExtensions.ZIP.includes(getFileExtension(file));
 
 const isRAR = (file) => fileExtensions.RAR.includes(getFileExtension(file));
 
-const isPDF = (file) => fileExtensions.PDF.includes(getFileExtension(file));
-
 const removeFolder = (path) => {
     try {
         deltree(path);
-    } catch (err) {
-        throw new Error(`Unable to remove folder '${path}'`);
-    }
+    } catch { }
 }
 
 const getDefaultInputFolder = () => path.join(__dirname, '../../comics_files');
@@ -60,34 +61,31 @@ const getImagesFiles = (sourceFolder) => {
         .map(file => path.join(sourceFolder, file));
 }
 
-const checkExtensionEnabled = (processData, extension, fileName, extensionEnabled) => {
-    if (extensionEnabled) {
-        return true;
-    }
-    processData.warning(`'${extension}' extraction disabled due to missing dependencies, file '${fileName}' ignored `);
-}
-
 const isSourceExtensionValid = (processData, fileName) => {
     const extension = getFileExtension(fileName);
 
-    if (isZIP(fileName)) {
-        return checkExtensionEnabled(processData, extension, fileName, dependencies.availableFeatures.extractionFromZIP);
+    if (isZIP(fileName) || isRAR(fileName)) {
+        return true;
     }
-    if (isRAR(fileName)) {
-        return checkExtensionEnabled(processData, extension, fileName, dependencies.availableFeatures.extractionFromRAR);
-    }
-    if (isPDF(fileName)) {
-        return checkExtensionEnabled(processData, extension, fileName, dependencies.availableFeatures.extractionFromPDF);
-    }
+}
 
-    processData.warning(`Not supported extension, file '${fileName}' ignored `);
+const isSelectedFileValid = (fileName) => {
+    const extension = getFileExtension(fileName);
+
+    if (isZIP(fileName) || isRAR(fileName)) {
+        return true;
+    }
+}
+
+const isSelectedFolderValid = (folder) => {
+    return fs.readdirSync(folder).some(file => isSelectedFileValid(file));
 }
 
 const findSourceFiles = (processData) => {
     try {
         const source = processData.source;
         if (!entryExists(source)) {
-            return processData.warning(`File or folder '${source}' not found`);
+            return;
         }
         if (isFile(source)) {
             if (isSourceExtensionValid(processData, getFile(source))) {
@@ -101,7 +99,7 @@ const findSourceFiles = (processData) => {
                 .filter(file => isFile(file));
 
             if (files.length === 0) {
-                return processData.warning(`No file was found in folder '${source}'`);
+                return;
             }
 
             for (const fileName of files) {
@@ -144,6 +142,14 @@ const setFolderStructure = (file) => {
     file.title = getFileWithoutExtension(fileName);
     file.formattedTitle = replaceInvalidCharacters(file.title);
 
+    if (process.platform === 'win32') {
+        // Validate Windows max path size limit
+        const pathMaxLengthSimulation = file.source.length + file.title.length + 30;
+        if (pathMaxLengthSimulation > 260) {
+            return false;
+        }
+    }
+
     const destinationFolder = path.join(sourceFolder, file.formattedTitle);
     const tempFolder = path.join(destinationFolder, 'temp');
 
@@ -158,6 +164,8 @@ const setFolderStructure = (file) => {
         videoCountdown: path.join(tempFolder, 'video_countdown'),
         videoJoin: path.join(tempFolder, 'video_join')
     }
+
+    return true;
 }
 
 const createFolderStructure = (file) => {
@@ -210,6 +218,9 @@ const setCurrentWorkingDirectory = () => {
 }
 
 module.exports = {
+    isSelectedFolderValid,
+    isSelectedFileValid,
+    entryExists,
     getDefaultInputFolder,
     findSourceFiles,
     setFolderStructure,
@@ -217,9 +228,7 @@ module.exports = {
     tryFindSubFolder,
     isZIP,
     isRAR,
-    isPDF,
     isFile,
-    getFile,
     getImagesFiles,
     prepareImageDestinationFolder,
     removeFolder,

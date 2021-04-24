@@ -6,7 +6,7 @@ let previousFilePart = '';
 
 const formatPercent = (percent) => {
     return (Math.floor(percent * 10, 1) / 10)
-    .toString() + '%';
+        .toString() + '%';
 }
 
 const progressBar = (value, ticks) => {
@@ -37,7 +37,7 @@ const showProgressItem = (data) => {
     const isFirst = !previousFile && !previousFilePart;
     const isNewFile = previousFile && previousFile != data.file;
     const isNewFilePart = previousFilePart && data.filePart && previousFilePart != data.filePart;
-    
+
     if (isFirst) {
         saveCursor();
     } else if (isNewFile || isNewFilePart) {
@@ -55,12 +55,24 @@ const showProgressItem = (data) => {
     }
     term('\n');
 
-    if (data.element) {
-        term.dim(`${progressBar(data.percent, 50)}`);
-        term(` ${data.element} ► ${formatPercent(data.percent)}`);
+    const percent = data.percentVideo > 0 ? data.percentVideo : data.percentImage;
+    let statusMessage;
+    if (percent !== 0) {
+        term.dim(`${progressBar(percent, 50)}`);
+        statusMessage = ` ${data.status} ► ${formatPercent(percent)}`;
     } else {
-        term(`► ${data.action}`);
+        statusMessage = `► ${data.status}`;
     }
+
+    if (data.statusType === 'error') {
+        term.red();
+    } else if (data.statusType === 'success') {
+        term.green();
+    } else {
+        term.defaultColor();
+    }
+    term(statusMessage);
+    term.defaultColor();
     term('\n');
 
     term.up(3); // Prevents scroll if Tesseract.js write any warning log
@@ -70,21 +82,12 @@ const showProgressItem = (data) => {
 }
 
 const showSummary = (data) => {
-    term.windowTitle('comics2video - Done');
-    term('\n\n\n\nProcess summary:');
-
-    for (const msg of data.messages) {
-        if (msg.messageType === 'warning') {
-            term.yellow();
-        } else if (msg.messageType === 'error') {
-            term.red();
-        } else if (msg.messageType === 'success') {
-            term.green();
-        }
-        term('\n- ' + msg.message);
-        term.defaultColor();
+    if (data.resultType === 'error') {
+        term.red();
     }
-    term(`\ncomics2video process completed in ${data.elapsedMinutes} minutes\n`);
+    term(`\n\n\n\n${data.resultMessage}\n\n`);
+    term.defaultColor();
+
     term.hideCursor();
 }
 

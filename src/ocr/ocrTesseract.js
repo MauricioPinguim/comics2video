@@ -8,11 +8,7 @@ const whitelist = whitelistLower + whitelistUpper;
 let worker;
 
 const initializeOCR = async () => {
-    if (!params.userParams.ocrEnabled) {
-        return;
-    }
-
-    // The file 'eng.traineddata.gz' in ocr folder is an english language data focused on speed instead of accuracy
+    // The file 'eng.traineddata.gz' in ocr folder is an English language data focused on speed instead of accuracy
     // Keep that file, or else Tesseract.js will download a default language data, bigger and slower
     // There is no need to use other language files, the goal here is only to count the number of letters in each frame/page
     // We don´t need to know what the characters said in the Comics story, only how many letters there were in the speech balloons, even if they are the wrong letters
@@ -34,20 +30,16 @@ const initializeOCR = async () => {
 
 const tryTerminateOCR = async () => {
     try {
-        if (!params.userParams.ocrEnabled) {
-            return;
-        }
         await worker.terminate();
     } catch { }
 }
 
 const isValidWord = (word) => {
+    // OCR results contains false readings, usually short words (mainly in lowercase letters) from random things (not real text)
+
     if (!word) {
         return false;
     }
-
-    // OCR result contains false readings, usually short words (mainly in lower case letters) from random things (not real text)
-    // Each word will be validated to remove them from the final result
 
     let lowerCount = 0;
     let upperCount = 0;
@@ -58,13 +50,13 @@ const isValidWord = (word) => {
     }
 
     if (upperCount >= 3) {
-        // With 3 or more upper case letters, chances are that it is real text
+        // With 3 or more uppercase letters, chances are that it is real text
         return true;
     } else if (lowerCount >= 4) {
         // Even being lowercase, false readings usually don't have 4 letters or more
         return true;
     } else if (upperCount >= 2 && lowerCount >= 3) {
-        // A combination of upper and lower case, probably not a false reading
+        // A combination of uppercase and lowercase, probably not a false reading
         return true;
     }
     // Most like to be a false reading, the entire word will be discarded
