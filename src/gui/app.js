@@ -7,11 +7,11 @@
  * https://github.com/MauricioPinguim/comics2video
  */
 
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
-
-require('./mainProcess');
+const { app, dialog, BrowserWindow, ipcMain, Menu } = require('electron');
+const message = require('../messages/message');
 
 let mainWindow, optionWindow;
+let isConversionRunning = false;
 
 function createMainWindow() {
     if (process.platform === 'darwin') {
@@ -38,11 +38,29 @@ function createMainWindow() {
     mainWindow.on('closed', () => {
         mainWindow = null
     });
+
+    mainWindow.on('close', (e) => {
+        if (isConversionRunning) {
+            const choiceIndex = dialog.showMessageBoxSync(mainWindow, {
+                message: message('warning_running'),
+                type: 'warning',
+                title: message('warning'),
+                detail: message('warning_running_detail'),
+                buttons: [message('yes') ,message('no')],
+                defaultId: 1,
+                cancelId: 1,
+                noLink: true
+            });
+            if (choiceIndex === 1) {
+                e.preventDefault();
+            }
+        }
+      });
 }
 
 function showOptionWindow() {
     optionWindow = new BrowserWindow({
-        width: 575, height: 285,
+        width: 600, height: 285,
         center: true,
         resizable: false, minimizable: false, maximizable: false,
         parent: mainWindow, modal: true, show: false,
@@ -62,10 +80,15 @@ function showOptionWindow() {
 }
 
 app.on('ready', () => {
+    require('./mainProcess');
     createMainWindow();
 
     ipcMain.on('showOptions', async (e) => {
         showOptionWindow();
+    });
+
+    ipcMain.on('setConversionRunning', async (e, conversionRunning) => {
+        isConversionRunning = conversionRunning;
     });
 });
 
@@ -73,6 +96,8 @@ app.on('window-all-closed', () => {
     // On macOS it is common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit();
+    } else {
+        isConversionRunning = false;
     }
 });
 

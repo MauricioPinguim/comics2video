@@ -3,21 +3,21 @@ const { app, dialog, clipboard, shell } = remote;
 const currentWindow = remote.getCurrentWindow();
 const filedir = require('../../util/filedir');
 
-const lblSource = document.getElementById('lblSource');
-const btnOpenFile = document.getElementById('btnOpenFile');
-const btnOpenFolder = document.getElementById('btnOpenFolder');
-const btnPaste = document.getElementById('btnPaste');
-const btnOptions = document.getElementById('btnOptions');
-const btnStart = document.getElementById('btnStart');
-const tblProgressRows = document.getElementById('tblProgressRows');
-const tblProgressRowsTemplate = document.getElementById('tblProgressRowsTemplate');
-const btnAbout = document.getElementById('btnAbout');
-const btnAboutProject = document.getElementById('btnAboutProject');
-const btnAboutAuthor = document.getElementById('btnAboutAuthor');
+const message = (messageId) => {
+    return ipcRenderer.sendSync('getMessage', messageId);
+}
+
+const element = (elementId) => {
+    return document.getElementById(elementId);
+}
+
+const setMessage = (elementId, messageId) => {
+    element(elementId).textContent = message(messageId);
+}
 
 const isWindows = process.platform === 'win32';
 const isMac = process.platform === 'darwin';
-const supportedFilesMessage = 'The supported Comic Book files are:\n• CBR\n• CBZ\n• Page images compressed in .RAR or .ZIP';
+const supportedFilesMessage = message('warning_unsupported');
 
 let previousFile, previousFilePart;
 
@@ -44,18 +44,20 @@ const setEnabled = (element, enabled) => {
 }
 
 const setButtonsEnabled = (enabled) => {
-    setEnabled(btnOpenFile, enabled);
-    setEnabled(btnOpenFolder, enabled);
-    setEnabled(btnPaste, enabled);
-    setEnabled(btnOptions, enabled);
+    setEnabled(element('btnOpenFile'), enabled);
+    setEnabled(element('btnOpenFolder'), enabled);
+    setEnabled(element('btnPaste'), enabled);
+    setEnabled(element('btnOptions'), enabled);
 }
 
 const getFileFolderSelection = (title, dialogStyle) => {
+    const filterName = message('comics_books');
+    
     let selection = dialog.showOpenDialogSync(currentWindow, {
         title: title,
         properties: [dialogStyle],
         filters: [
-            { name: 'Comic Books', extensions: ['cbr', 'cbz', 'rar', 'zip'] }
+            { name: filterName, extensions: ['cbr', 'cbz', 'rar', 'zip'] }
         ]
     })
 
@@ -66,16 +68,17 @@ const getFileFolderSelection = (title, dialogStyle) => {
 }
 
 const setSource = (source) => {
+    const lblSource = element('lblSource');
     if (source) {
         lblSource.textContent = source;
         lblSource.className = 'source-selection-value';
 
-        setEnabled(btnStart, true);
+        setEnabled(element('btnStart'), true);
         btnStart.focus();
     } else {
-        lblSource.textContent = '(None selected)';
+        lblSource.textContent = message('none_selected');
         lblSource.className = 'source-selection-value-none';
-        setEnabled(btnStart, false);
+        setEnabled(element('btnStart'), false);
     }
 }
 
@@ -88,8 +91,8 @@ const showAlert = (message, title, detail, type) => {
     });
 }
 
-const showWarningInvalidSource = (message) => {
-    showAlert(message, 'Warning', supportedFilesMessage, 'warning');
+const showWarningInvalidSource = (messageText) => {
+    showAlert(messageText, message('warning'), supportedFilesMessage, 'warning');
 }
 
 const setScrollBarVisible = (visible) => {
@@ -103,7 +106,8 @@ const setScrollBarVisible = (visible) => {
 }
 
 const openFile = () => {
-    const selection = getFileFolderSelection('Select Comic Book file', 'openFile');
+    const title = message('open_file_title');
+    const selection = getFileFolderSelection(title, 'openFile');
 
     if (selection) {
         if (filedir.isSelectedFileValid(selection)) {
@@ -111,20 +115,21 @@ const openFile = () => {
             setScrollBarVisible(false);
         }
         else {
-            showWarningInvalidSource('Invalid file selected');
+            showWarningInvalidSource(message('invalid_file'));
         }
     }
 }
 
 const openFolder = () => {
-    const selection = getFileFolderSelection('Select folder containing Comic Book Files', 'openDirectory');
+    const title = message('open_folder_title');
+    const selection = getFileFolderSelection(title, 'openDirectory');
 
     if (selection) {
         if (filedir.isSelectedFolderValid(selection)) {
             setSource(selection);
             setScrollBarVisible(true);
         } else {
-            showWarningInvalidSource('No valid Comic Book was found on selected folder');
+            showWarningInvalidSource(message('invalid_folder'));
         }
     }
 }
@@ -161,11 +166,11 @@ const paste = () => {
         }
     }
 
-    showWarningInvalidSource('No valid Comic Book File was copied to Clipboard', supportedFilesMessage);
+    showWarningInvalidSource(message('invalid_clipboard'), supportedFilesMessage);
 }
 
 const getLastElement = (className) => {
-    const elements = document.getElementsByClassName(className);
+    const elements = element('tblProgressRows').getElementsByClassName(className);
 
     if (elements && elements.length > 0) {
         return elements[elements.length - 1];
@@ -226,9 +231,9 @@ const isNewRow = (data) => {
 
 const showProgress = (data) => {
     if (isNewRow(data)) {
-        const templateRow = tblProgressRowsTemplate.rows[0];
+        const templateRow = element('tblProgressRowsTemplate').rows[0];
         const newRow = templateRow.cloneNode(true);
-        tblProgressRows.appendChild(newRow);
+        element('tblProgressRows').appendChild(newRow);
     }
 
     const progressFile = getLastElement('progress-file');
@@ -237,6 +242,8 @@ const showProgress = (data) => {
     const progressStatusIcon = getLastElement('progress-status-icon');
     const progressImage = getLastElement('progress-image');
     const progressVideo = getLastElement('progress-video');
+    const progressImagesLocation = getLastElement('progress-images-location');
+    const progressVideoLocation = getLastElement('progress-video-location');
 
     progressFilePart.textContent = data.filePart;
     progressFile.textContent = data.file;
@@ -246,14 +253,47 @@ const showProgress = (data) => {
 
     showProgressBarPercent(progressImage, data.percentImage);
     showProgressBarPercent(progressVideo, data.percentVideo);
+    
+    progressImagesLocation.textContent = data.imageDestinationFolder || '';
+    progressVideoLocation.textContent = data.videoDestinationFile || '';
 
     previousFile = data.file;
     previousFilePart = data.filePart;
 }
 
+const showFileFolder = (location) => {
+    try {
+        shell.showItemInFolder(location);
+    } catch {}
+}
+
+const showDestinationButtons = () => {
+    const tblProgressRows = element('tblProgressRows');
+    const imageLocations = tblProgressRows.getElementsByClassName('progress-images-location');
+    const imageButtons = tblProgressRows.getElementsByClassName('progress-show-images');
+    const videoLocations = tblProgressRows.getElementsByClassName('progress-video-location');
+    const videoButtons = tblProgressRows.getElementsByClassName('progress-show-video');
+
+    for (let i=0; i<imageLocations.length; i++) {
+        const imageLocation = imageLocations[i].textContent;
+        if (imageLocation) {
+            setVisible(imageButtons[i], true)
+            imageButtons[i].addEventListener('click', () => showFileFolder(imageLocation));
+        }
+
+        const videoLocation = videoLocations[i].textContent;
+        if (videoLocation) {
+            setVisible(videoButtons[i], true)
+            videoButtons[i].addEventListener('click', () => showFileFolder(videoLocation));
+        }
+    }
+}
+
 const showProgressCompleted = (data) => {
     if (data.resultType === 'error') {
         showAlert(data.resultMessage, 'comics2video', '', data.resultType);
+    } else {
+        showDestinationButtons();
     }
 
     setButtonsEnabled(true);
@@ -261,16 +301,17 @@ const showProgressCompleted = (data) => {
 }
 
 const start = () => {
-    setEnabled(btnStart, false);
+    setEnabled(element('btnStart'), false);
     setButtonsEnabled(false);
-    tblProgressRows.innerHTML = '';
+    element('tblProgressRows').innerHTML = '';
     setVisible(tblProgress, true);
 
     previousFile = '';
     previousFilePart = '';
 
-    const source = lblSource.innerText;
+    const source = element('lblSource').innerText;
     ipcRenderer.send('startConversion', source);
+    ipcRenderer.send('setConversionRunning', true);
 }
 
 const about = () => {
@@ -290,6 +331,7 @@ ipcRenderer.on('progressUpdated', async (e, data) => {
 });
 
 ipcRenderer.on('processCompleted', async (e, data) => {
+    ipcRenderer.send('setConversionRunning', false);
     showProgressCompleted(data);
 });
 
@@ -301,23 +343,46 @@ const checkShortcutKeys = (e) => {
     const ctrlDown = e.ctrlKey || e.metaKey;
 
     if (ctrlDown && e.keyCode == 86) {
-        if (!btnPaste.disabled) {
-            btnPaste.click();
+        if (!element('btnPaste').disabled) {
+            element('btnPaste').click();
         }
     }
 }
 
-const setEvents = () => {
-    btnOpenFile.addEventListener('click', () => openFile());
-    btnOpenFolder.addEventListener('click', () => openFolder());
-    btnPaste.addEventListener('click', () => paste());
-    btnStart.addEventListener('click', () => start());
-    btnOptions.addEventListener('click', () => options());
-    btnAbout.addEventListener('click', () => about());
-    btnAboutProject.addEventListener('click', () => aboutProject());
-    btnAboutAuthor.addEventListener('click', () => aboutAuthor());
+const setMessages = () => {
+    setMessage('lblFolderLabel', 'file_folder');
+    setMessage('lblSource', 'none_selected');
+    setMessage('lblOpenFile', 'select_file');
+    setMessage('lblOpenFolder', 'select_folder');
+    setMessage('lblPasteFile', 'paste_file');
+    setMessage('lblStart', 'start_conversion');
+    setMessage('lblOptions', 'options');
+
+    setMessage('lblHeaderFile', 'header_file');
+    setMessage('lblHeaderStatus', 'header_status');
+    setMessage('lblHeaderImages', 'header_images');
+    setMessage('lblHeaderVideo', 'header_video');
+    setMessage('lblShowImages', 'show');
+    setMessage('lblShowVideo', 'show');
+    setMessage('lblAboutProject', 'project');
+    setMessage('lblAboutAuthor', 'contact');
+}
+
+const prepareWindow = () => {
+    setMessages();
+
+    element('lblAbout').textContent = 'v' + ipcRenderer.sendSync('getVersion');
+    
+    element('btnOpenFile').addEventListener('click', () => openFile());
+    element('btnOpenFolder').addEventListener('click', () => openFolder());
+    element('btnPaste').addEventListener('click', () => paste());
+    element('btnStart').addEventListener('click', () => start());
+    element('btnOptions').addEventListener('click', () => options());
+    element('btnAbout').addEventListener('click', () => about());
+    element('btnAboutProject').addEventListener('click', () => aboutProject());
+    element('btnAboutAuthor').addEventListener('click', () => aboutAuthor());
 
     document.onkeydown = (e) => checkShortcutKeys(e);
 }
 
-setEvents();
+prepareWindow();

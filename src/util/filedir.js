@@ -1,7 +1,8 @@
 const deltree = require("deltree");
 const path = require('path');
 const fs = require('fs');
-const File = require('../classes/File')
+const File = require('../classes/File');
+const message = require('../messages/message');
 
 const fileExtensions = {
     ZIP: ['.cbz', '.zip'],
@@ -195,11 +196,12 @@ const createFolderStructure = (file) => {
 const prepareImageDestinationFolder = (file, filePart) => {
     let folder;
     try {
+        const folderBase = message('images_folder');
 
         if (file.isMultiPart) {
-            folder = path.join(file.destinationFolder, `Images - ${filePart.partTitle}`);
+            folder = path.join(file.destinationFolder, `${folderBase} - ${filePart.partTitle}`);
         } else {
-            folder = path.join(file.destinationFolder, 'Images');
+            folder = path.join(file.destinationFolder, folderBase);
         }
         createFolder(folder);
 

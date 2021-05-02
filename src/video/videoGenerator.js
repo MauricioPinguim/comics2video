@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const duration = require('./duration');
 const ffmpeg = require('./ffmpeg');
+const message = require('../messages/message');
 
 const processFrameVideoCountDown = async (processData) => {
     const { filePart, file, frame } = processData.getCurrentData();
@@ -69,7 +70,7 @@ const processFinalVideo = async (processData) => {
     const { file, filePart } = processData.getCurrentData();
 
     processData.progress({
-        status: 'Finishing (This can take some minutes)',
+        status: message('finishing_video'),
         statusType: 'wait',
         percentVideo: 99.9
     });
@@ -81,13 +82,14 @@ const processFinalVideo = async (processData) => {
         await ffmpeg.joinVideos(processData, joinVideoFile);
 
         processData.progress({
-            status: 'Video generated successfully',
+            status: message('video_success'),
             statusType: 'success',
-            percentVideo: 100
+            percentVideo: 100,
+            videoDestinationFile: filePart.videoDestinationFile
         });
     } catch (error) {
         processData.progress({
-            status: `Unable to create video file`,
+            status: message('unable_create_video'),
             statusType: 'error',
             percentVideo: 0
         });
@@ -98,7 +100,7 @@ const process = async (processData) => {
     const { filePart } = processData.getCurrentData();
 
     processData.progress({
-        status: `Generating Video`,
+        status: message('generating_video'),
         statusType: 'video',
         percentVideo: 0
     });

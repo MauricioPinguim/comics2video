@@ -54,6 +54,7 @@ const systemParams = {
     jpegOCROutputQuality: 80,
     videoFrameRate: 8,
     videoQualityMBPS: .5,
+    defaultMessageLanguage: 'en',
     keepTempFolder: false,
     disableTerminalElaborate: false
 }
@@ -61,7 +62,8 @@ const systemParams = {
 const userParams = {
     generateVideo: true,
     contentProfile: contentProfiles.complexContent,
-    readingSpeed: readingSpeeds.normal
+    readingSpeed: readingSpeeds.normal,
+    messageLanguage: 'en'
 }
 
 const setGenerateVideo = (generateVideo) => {
@@ -107,6 +109,12 @@ const setReadingSpeed = (readingSpeed) => {
     }
 }
 
+const setMessageLanguage = (messageLanguage) => {
+    if (messageLanguage) {
+        userParams.messageLanguage = messageLanguage.trim();
+    }
+}
+
 const setParamValues = (paramValues) => {
     if (!paramValues) {
         return;
@@ -115,6 +123,7 @@ const setParamValues = (paramValues) => {
     setGenerateVideo(paramValues.generateVideo);
     setContentProfile(paramValues.contentProfile);
     setReadingSpeed(paramValues.readingSpeed);
+    setMessageLanguage(paramValues.messageLanguage);
 }
 
 module.exports = {

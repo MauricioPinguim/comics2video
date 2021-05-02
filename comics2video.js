@@ -7,7 +7,7 @@
  * https://github.com/MauricioPinguim/comics2video
  */
 
-// This is the Terminal Interface for comics2video. For the Graphical User Interface (except Linux), use this command instead:
+// This is the Terminal Interface for comics2video. For the Graphical User Interface (except in Linux), use this command instead:
 // npm start
 
 (async () => {

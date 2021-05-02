@@ -1,3 +1,5 @@
+const message = require('../messages/message');
+
 module.exports = class FilePart {
     constructor(file, partNumber) {
         this.partNumber = partNumber;
@@ -9,7 +11,7 @@ module.exports = class FilePart {
         this.totalVideoFrames = 0;
 
         if (file.isMultiPart) {
-            this.partTitle = `Part ${partNumber.toString().padStart(2, '0')}`;
+            this.partTitle = `${message('part')} ${partNumber.toString().padStart(2, '0')}`;
             this.outputFile = `${file.formattedTitle} - ${this.partTitle}`;
         } else {
             this.partTitle = '';

@@ -1,6 +1,7 @@
 const params = require('../params');
 const processPage = require('./processPage');
 const videoGenerator = require('../video/videoGenerator');
+const message = require('../messages/message');
 
 const processPages = async (processData) => {
     const { filePart } = processData.getCurrentData();
@@ -10,9 +11,10 @@ const processPages = async (processData) => {
     }
 
     processData.progress({
-        status: 'Images generated successfully',
+        status: message('images_success'),
         statusType: 'success',
-        percentImage: 100
+        percentImage: 100,
+        imageDestinationFolder: filePart.imageDestinationFolder
     });
 }
 
@@ -22,9 +24,11 @@ const process = async (processData) => {
     const partText = file.fileParts.length > 1 ? `${filePart.number}/${file.fileParts.length}` : '';
     processData.progress({
         filePart: partText,
-        status: `Processing Images`,
+        status: message('processing_images'),
         statusType: 'image',
-        percentImage: 0
+        percentImage: 0,
+        imageDestinationFolder: '',
+        videoDestinationFile: ''
     });
 
     await processPages(processData);

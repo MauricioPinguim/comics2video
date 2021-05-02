@@ -3,6 +3,7 @@ const filedir = require('../util/filedir');
 const duration = require('../video/duration');
 const processFile = require('./processFile');
 const ocrTesseract = require('../ocr/ocrTesseract');
+const message = require('../messages/message');
 
 const initialize = async (processData) => {
     // Must set this folder to prevent Tesseract.js from creating the Trained data file elsewhere    
@@ -26,17 +27,17 @@ const process = async (processData) => {
         await initialize(processData);
 
         if (processData.files.length === 0) {
-            return processData.finishProcess(`No valid Comic Book files to be processed`, `error`);
+            return processData.finishProcess(message('no_valid_files'), `error`);
         }
 
         while (processData.selectNextFile()) {
             await processFile.process(processData);
         }
 
-        await processData.finishProcess(`Conversion process finished`, `info`);
+        await processData.finishProcess(message('conversion_finished'), `info`);
     }
     catch (error) {
-        await processData.finishProcess(`Unexpected error - ${error}`, `error`);
+        await processData.finishProcess(`${message('unexpected_error')} - ${error}`, `error`);
     } finally {
         await terminateOCR();
     }

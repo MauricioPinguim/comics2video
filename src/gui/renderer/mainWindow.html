@@ -10,42 +10,34 @@
 <body>
     <header class="toolbar toolbar-header">
         <div class="source-selection">
-            <span class="source-selection-label">File/Folder: </span>
+            <span class="source-selection-label" id="lblFolderLabel">File/Folder</span>: 
             <span class="source-selection-value-none" id="lblSource">(None selected)</span>
         </div>
         <div class="toolbar-actions">
             <button class="btn btn-default" id="btnOpenFile">
                 <span class="icon icon-book"></span>
-                <span>Select Comic Book file</span>
+                <span id="lblOpenFile">Select Comic Book file</span>
             </button>
             <button class="btn btn-default" id="btnOpenFolder">
                 <span class="icon icon-folder"></span>
-                <span>Select folder</span>
+                <span id="lblOpenFolder">Select folder</span>
             </button>
             <button class="btn btn-default" id="btnPaste">
                 <span class="icon icon-clipboard"></span>
-                <span>Paste file</span>
+                <span id="lblPasteFile">Paste file</span>
             </button>
             <button class="btn" id="btnStart" disabled>
-                <span>Start conversion</span>
+                <span id="lblStart">Start conversion</span>
             </button>
             <button class="btn btn-default pull-right" id="btnOptions">
                 <span class="icon icon-cog"></span>
-                <span>Options</span>
+                <span id="lblOptions">Options</span>
             </button>
         </div>
     </header>
 
     <main>
         <table id="tblProgressTemplate" class="invisible">
-            <thead>
-                <tr>
-                    <th style="width: 55%">File</th>
-                    <th style="width: 27%">Status</th>
-                    <th style="width: 9%">Images</th>
-                    <th style="width: 9%">Video</th>
-                </tr>
-            </thead>
             <tbody id="tblProgressRowsTemplate">
                 <tr>
                     <td>
@@ -58,9 +50,19 @@
                         <span class="progress-status"></span>
                     </td>
                     <td>
+                        <button class='progress-show-images btn btn-mini btn-default invisible'>
+                            <span class="icon icon-picture"></span>
+                            <span id='lblShowImages'>Show</span>
+                        </button>
+                        <span class="progress-images-location invisible"></span>
                         <progress class="progress-image invisible" value="0" max="100"></progress>
                     </td>
                     <td>
+                        <button class='progress-show-video btn btn-mini btn-default invisible'>
+                            <span class="icon icon-video"></span>
+                            <span id='lblShowVideo'>Show</span>
+                        </button>
+                        <span class="progress-video-location invisible"></span>
                         <progress class="progress-video invisible" value="0" max="100"></progress>
                     </td>
                 </tr>
@@ -71,10 +73,18 @@
         <table class="table-striped invisible" id="tblProgress">
             <thead>
                 <tr>
-                    <th style="width: 55%">File</th>
-                    <th style="width: 27%">Status</th>
-                    <th style="width: 9%">Images</th>
-                    <th style="width: 9%">Video</th>
+                    <th style="width: 51%">
+                        <span id="lblHeaderFile">File</span>
+                    </th>
+                    <th style="width: 25%">
+                        <span id="lblHeaderStatus">Status</span>
+                    </th>
+                    <th style="width: 12%">
+                        <span id="lblHeaderImages">Images</span>
+                    </th>
+                    <th style="width: 12%">
+                        <span id="lblHeaderVideo">Video</span>
+                    </th>
                 </tr>
             </thead>
             <tbody id="tblProgressRows">
@@ -86,15 +96,15 @@
         <div class="toolbar-actions">
             <button class="btn btn-default pull-right" id="btnAboutAuthor">
                 <span class="icon icon-twitter"></span>
-                <span>Contact</span>
+                <span id="lblAboutAuthor">Contact</span>
             </button>
             <button class="btn btn-default pull-right" id="btnAboutProject">
                 <span class="icon icon-github"></span>
-                <span>Project comics2video</span>
+                <span id="lblAboutProject">Project</span>
             </button>
             <button class="btn btn-default pull-right" id="btnAbout">
                 <span class="icon icon-info-circled"></span>
-                <span>About</span>
+                <span id="lblAbout"></span>
             </button>
         </div>
     </footer>

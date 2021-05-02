@@ -62,5 +62,5 @@
         "start": "electron ./src/gui/app.js"
     },
     "title": "comic2video",
-    "version": "2.0.0"
+    "version": "2.1.0"
 }

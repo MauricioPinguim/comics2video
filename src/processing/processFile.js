@@ -5,6 +5,7 @@ const extract = require('../extraction/extract');
 const params = require('../params');
 const filedir = require('../util/filedir');
 const processFilePart = require('./processFilePart');
+const message = require('../messages/message');
 
 const analyzePages = async (file) => {
     const sourcePages = filedir.getImagesFiles(file.tempFolders.pages)
@@ -68,29 +69,31 @@ const process = async (processData) => {
         processData.progress({
             file: file.sourceFileName,
             filePart: '',
-            status: `Creating folders`,
+            status: message('creating_folders'),
             statusType: 'folder',
             percentImage: 0,
-            percentVideo: 0
+            percentVideo: 0,
+            imageDestinationFolder: '',
+            videoDestinationFile: ''
         });
 
         if (!filedir.setFolderStructure(file)) {
             return processData.progress({
-                status: `Path+Filename is too long`,
+                status: message('path_too_long'),
                 statusType: 'error'
             });
         }
 
         if (!filedir.createFolderStructure(file)) {
             return processData.progress({
-                status: `Destination folder already exists`,
+                status: message('folder_already_exists'),
                 statusType: 'error'
             });
         }
 
         if (!await extract.extractFile(processData)) {
             return processData.progress({
-                status: `Unable to extract file`,
+                status: message('unable_to_extract'),
                 statusType: 'error'
             });
         }
@@ -98,7 +101,7 @@ const process = async (processData) => {
         await analyzePages(file);
         if (file.sourcePages.length === 0) {
             return processData.progress({
-                status: `No valid page file found`,
+                status: message('no_valid_page'),
                 statusType: 'error'
             });
         }
@@ -112,7 +115,7 @@ const process = async (processData) => {
         }
     } catch (error) {
         return processData.progress({
-            status: `Process failed - ${error}`,
+            status: `${message('process_failed')} - ${error}`,
             statusType: 'error',
             percentImage: 0,
             percentVideo: 0

@@ -6,6 +6,8 @@ module.exports = class ProgressData {
         this.statusType = '';
         this.percentImage = 0;
         this.percentVideo = 0;
+        this.imageDestinationFolder = '';
+        this.videoDestinationFile = '';
     }
 
     toString() {
@@ -19,16 +21,16 @@ module.exports = class ProgressData {
     }
 
     update(updatedFields) {
-        if (updatedFields.file) {
+        if (updatedFields.file != undefined) {
             this.file = updatedFields.file;
         }
         if (updatedFields.filePart != undefined) {
             this.filePart = updatedFields.filePart;
         }
-        if (updatedFields.status) {
+        if (updatedFields.status != undefined) {
             this.status = updatedFields.status;
         }
-        if (updatedFields.statusType) {
+        if (updatedFields.statusType != undefined) {
             this.statusType = updatedFields.statusType;
         }
         if (updatedFields.percentImage != undefined) {
@@ -36,6 +38,12 @@ module.exports = class ProgressData {
         }
         if (updatedFields.percentVideo != undefined) {
             this.percentVideo = updatedFields.percentVideo;
+        }
+        if (updatedFields.imageDestinationFolder != undefined) {
+            this.imageDestinationFolder = updatedFields.imageDestinationFolder;
+        }
+        if (updatedFields.videoDestinationFile != undefined) {
+            this.videoDestinationFile = updatedFields.videoDestinationFile;
         }
     }
 }

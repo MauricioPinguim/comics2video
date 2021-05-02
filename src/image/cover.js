@@ -5,6 +5,7 @@ const Page = require('../classes/Page');
 const params = require('../params');
 const imageUtil = require('./imageProcessing');
 const svg = require('./svg');
+const message = require('../messages/message');
 
 const coverTypes = { FrontCover: {}, BackCover: {} };
 
@@ -126,7 +127,7 @@ const prepareCoverImages = async (processData) => {
     const firstPage = file.sourcePages[0];
 
     processData.progress({
-        status: `Processing cover images`,
+        status: message('processing_cover'),
         statusType: 'image'
     });
 
@@ -152,9 +153,15 @@ const addCoverPages = (filePart) => {
 
     let coverSubtitle;
     if (filePart.isMultiPart) {
-        coverSubtitle = `${filePart.partTitle} (pages ${filePart.firstPage} to ${filePart.lastPage})`;
+        coverSubtitle = `${filePart.partTitle} (${message('pages')} ${filePart.firstPage} ${message('pages_to')} ${filePart.lastPage})`;
     } else {
-        coverSubtitle = `${filePart.pages.length} page${filePart.pages.length > 1 ? 's' : ''}`;
+        let pageLabel;
+        if (filePart.pages.length > 1) {
+            pageLabel = message('pages');
+        } else {
+            pageLabel = message('page');
+        }
+        coverSubtitle = `${filePart.pages.length} ${pageLabel}`;
     }
 
     if (!params.systemParams.skipFrontCover) {
@@ -174,7 +181,7 @@ const addCoverPages = (filePart) => {
             number: lastPage.number,
             name: lastPage.number.toString().padStart(3, '0'),
             title: filePart.title,
-            subtitle: filePart.isLastPart ? 'End of File' : 'End of ' + filePart.partTitle,
+            subtitle: filePart.isLastPart ? message('end_of_file') : message('end_of') + ' ' + filePart.partTitle,
             coverType: coverTypes.BackCover
         })
     );

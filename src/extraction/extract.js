@@ -1,12 +1,13 @@
 const filedir = require('../util/filedir');
 const extractZIP = require('./extractZIP'); 
 const extractRAR = require('./extractRAR'); 
+const message = require('../messages/message');
 
 const extractFile = async (processData) => {
     const { file } = processData.getCurrentData();
     try {
         processData.progress({
-            status: `Extracting file`,
+            status: message('extracting_file'),
             statusType: `folder`
         });
 

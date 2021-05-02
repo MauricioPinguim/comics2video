@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-    <title>comics2video - Options</title>
+    <title>comics2video</title>
     <link rel="stylesheet" href="../../../node_modules/photonkit/dist/css/photon.css">
     <link rel="stylesheet" href="main.css">
 </head>
@@ -13,42 +13,60 @@
             <div class="toolbar-actions">
                 <p class="option-label">
                     <span class="icon icon-video"></span>
-                    Generate Video
+                    <span id="lblGenerateVideoLabel">Generate Video</span>
                 </p>
                 <div class="btn-group">
-                    <button class="btn btn-mini btn-default" id="btnYes">Yes</button>
-                    <button class="btn btn-mini btn-default" id="btnNo">No</button>
+                    <button class="btn btn-mini btn-default" id="btnYes">
+                        <span id="lblYes">Yes</span>
+                    </button>
+                    <button class="btn btn-mini btn-default" id="btnNo">
+                        <span id="lblNo">No</span>
+                    </button>
                 </div>
                 <span class="option-description" id="lblGenerateVideo"></span>
             </div>
             <div class="toolbar-actions">
                 <p class="option-label">
                     <span class="icon icon-book"></span>
-                    Content Profile
+                    <span id="lblContentProfileLabel">Content Profile</span>
                 </p>
                 <div class="btn-group">
-                    <button class="btn btn-mini btn-default" id="btnComplex">Complex</button>
-                    <button class="btn btn-mini btn-default" id="btnSimple">Simple</button>
+                    <button class="btn btn-mini btn-default" id="btnComplex">
+                        <span id="lblComplex">Complex</span>
+                    </button>
+                    <button class="btn btn-mini btn-default" id="btnSimple">
+                        <span id="lblSimple">Simple</span>
+                    </button>
                 </div>
                 <span class="option-description" id="lblContentProfile"></span>
             </div>
             <div class="toolbar-actions">
                 <p class="option-label">
                     <span class="icon icon-fast-forward"></span>
-                    Reading Speed
+                    <span id="lblReadingSpeedLabel">Reading Speed</span>
                 </p>
                 <div class="btn-group">
-                    <button class="btn btn-mini btn-default" id="btnSlow">Slow</button>
-                    <button class="btn btn-mini btn-default" id="btnNormal">Normal</button>
-                    <button class="btn btn-mini btn-default" id="btnFast">Fast</button>
+                    <button class="btn btn-mini btn-default" id="btnSlow">
+                        <span id="lblSlow">Slow</span>
+                    </button>
+                    <button class="btn btn-mini btn-default" id="btnNormal">
+                        <span id="lblNormal">Normal</span>
+                    </button>
+                    <button class="btn btn-mini btn-default" id="btnFast">
+                        <span id="lblFast">Fast</span>
+                    </button>
                 </div>
                 <span class="option-description" id="lblReadingSpeed"></span>
             </div>
         </div>
 
         <div class="toolbar toolbar-header" id="optionsPanelButtons">
-            <button class="btn btn-mini btn-primary pull-right" id="btnOK">OK</button>
-            <button class="btn btn-mini btn-default pull-right" id="btnCancel">Cancel</button>
+            <button class="btn btn-mini btn-primary pull-right" id="btnOK">
+                <span id="lblOK">OK</span>
+            </button>
+            <button class="btn btn-mini btn-default pull-right" id="btnCancel">
+                <span id="lblCancel">Cancel</span>
+            </button>
         </div>
     </main>
 
