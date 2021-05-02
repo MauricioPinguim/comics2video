@@ -1,9 +1,9 @@
-> ![Brazil Flag](./docs/images/flag_brazil.png)[Português - Brasil](https://github.com/MauricioPinguim/comics2video/blob/master/README.pt.md) | ![USA Flag](./docs/images/flag_united_states.png)![United Kingdom Flag](./docs/images/flag_united_kingdom.png)[English](https://github.com/MauricioPinguim/comics2video#readme)
-
 # comics2video
 Converts Comic Book files to videos, to be watched on TV/Video players.
 
-The possibility of reading a Comic Book by watching a video allows the user to be **hands-free** (no need to hold a phone or press a button/screen to change the pages) and also allow the reading by **people with disabilities**.
+The possibility of reading a Comic Book by watching a video allows the user to be **hands-free** (no need to hold a phone or press a button/screen to change the pages) and also allow the reading by **people with disabilities/paralysis**.
+
+> Documentation/Documentação: ![Brazil Flag](./docs/images/flag_brazil.png) [Português - Brasil](https://github.com/MauricioPinguim/comics2video/blob/master/README.pt.md) | ![USA Flag](./docs/images/flag_united_states.png) ![United Kingdom Flag](./docs/images/flag_united_kingdom.png) [English](https://github.com/MauricioPinguim/comics2video#readme)
 
 ### How it works
 > Example using Whiz Comics #34 (1942) - Fawcett Publications (Public Domain)
@@ -85,7 +85,7 @@ User Parameters fields (all optional):
 ## Using the generated files
 For each comic book processed, a folder with the same name will be created, containing:
 - The video file in .MP4 format
-	- Just open it in the TV/Video player of your choice, like a regular video
+	- Just open it in the TV/Video player of your choice, like a regular video. Pages will be changed automatically (pages with more text will last longer)
 - A subfolder named 'Images' with all the frames in .JPG format
 	- That can also be opened in modern TVs, advance each frame/page manually using the remote control
 
