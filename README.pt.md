@@ -3,14 +3,14 @@ Converte arquivos de História em Quadrinhos em Vídeos, para serem visualizados
 
 Ler História em Quadrinhos por meio de vídeos permite que o usuário fique com as mãos livres, pois não há a necessidade de segurar um celular ou pressionar nenhum botão/tela para mudar de página, além de permitir a utilização por pessoas com **deficiência/paralisia**.
 
-> Documentation/Documentação: ![USA Flag](./docs/images/flag_united_states.png) ![United Kingdom Flag](./docs/images/flag_united_kingdom.png) [English](https://github.com/MauricioPinguim/comics2video#readme) | ![Brazil Flag](./docs/images/flag_brazil.png) [Português - Brasil](https://github.com/MauricioPinguim/comics2video/blob/master/README.pt.md)
+> Documentation: ![USA Flag](./docs/images/flag_united_states.png) ![United Kingdom Flag](./docs/images/flag_united_kingdom.png) [English](https://github.com/MauricioPinguim/comics2video#readme) | ![Brazil Flag](./docs/images/flag_brazil.png) [Português - Brasil](https://github.com/MauricioPinguim/comics2video/blob/master/README.pt.md)
 
 ### Como funciona
-> Exemplo utilizando "Whiz Comics #34 (1942) - Fawcett Publications" (Domínio Público)
+Exemplo utilizando "Whiz Comics #34 (1942) - Fawcett Publications" (Domínio Público)
 
 ![Como comics2video funciona](./docs/images/comics2video.jpg)
-Amostra de Vídeo gerado:
-![Amostra - Vídeo gerado](./docs/images/comics2video.gif)
+Amostra de Vídeo gerado<br/>
+![Amostra - Vídeo gerado com comics2video](./docs/images/comics2video.gif)
 
 ## Uso recomendado: Arquivo executável pronto para rodar
 Para Windows e macOS:
@@ -49,7 +49,7 @@ Adicione o comics2video ao seu próprio projeto em Node.js com:
 ```sh
 npm install comics2video
 ```
-Utilize e adapte o código de exemplo a seguir:
+Adapte o código de exemplo a seguir:
 ```javascript
 const Comics2video = require('comics2video');
 
@@ -83,9 +83,9 @@ Campos da estrutrura userParameters (todos opcionais):
 | messageLanguage | string:<br/> 'en', 'pt' | 'en' | Idioma da Interface Gráfica e alguns elementos:<br />• 'en' : Inglês<br />• 'pt' : Português (Brasil) |
 
 ## Usando os arquivos gerados
-Após cada processamento, uma pasta será criada com o mesmo nome do arquivo de HQ, contendo:
+Após cada processamento, uma pasta será criada com o mesmo nome do arquivo da HQ, contendo:
 - O arquivo de vídeo no formato .MP4
-	- Basta abrir o mesmo na TV ou Video player de sua preferência, como um vídeo normal. O avanço será automático, com o tempo determinado pela quantidade de texto em cada página
+	- Abra o mesmo na TV ou Video player de sua preferência, como um vídeo normal. O avanço será automático, com o tempo determinado pela quantidade de texto em cada página
 - Uma sub-pasta chamada 'Imagens' contendo todos os frames utilizados, em formato .JPG
 	- A ser utilizado na função de visualizar fotos nas TVs modernas, com o avanço manual das páginas pelo controle remoto
 
