@@ -7,7 +7,7 @@ const log = require('../terminal/basicLog');
 const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
 // Electron may not be able to get version directly from package.json
-const appVersion = '2.1.0';
+const appVersion = '2.1.1';
 
 const checkPlatform = () => {
     if (!isWindows && !isMac) {

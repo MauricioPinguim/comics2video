@@ -13,12 +13,25 @@ Amostra de Vídeo gerado<br/>
 ![Amostra - Vídeo gerado com comics2video](./docs/images/comics2video.gif)
 
 ## Uso recomendado: Arquivo executável pronto para rodar
-Para Windows e macOS:
-1. Faça o Download do arquivo referente ao seu Sistema Operacional:
-	- [comics2video 2.1.0 para Windows](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_windows_latest.zip)
-	- [comics2video 2.1.0 para macOS](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_macOS_latest.zip)
-2. Descompacte o arquivo baixado e abra o executável: ![executável do comics2video](./docs/images/comics2video_executable_small.png)
-3. Use o aplicativo para selecionar a História em Quadrinhos entre os seus arquivos, e inicie a conversão
+
+### Para Windows
+1. Faça o download do arquivo:
+	- [comics2video 2.1.1 para Windows](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_windows_latest.zip)
+2. Descompacte o arquivo baixado e abra o executável:
+![executável do comics2video](./docs/images/comics2video_executable_small.png)
+
+### Para macOS:
+> Por ser baixado do GitHub e não da Apple Store, siga todos os passos abaixo antes de usar o comics2video pela primeira vez
+1. Faça o download do arquivo:
+	- [comics2video 2.1.1 para macOS](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_macOS_latest.zip)
+2. Descompacte o arquivo baixado
+3. Clique com o botão direito no arquivo  **comics2video_Prepare_First_Execution** e escolha "Abrir" no submenu
+4. Confirme a abertura do arquivo. Um script será executado e mostrará a mensagem "Done"
+5. A partir de agora, abra o comics2video usando o arquivo de aplicativo:
+![executável do comics2video](./docs/images/comics2video_executable_small.png)
+
+### Tela principal do comics2video
+Use os botões para selecionar um arquivo de História em Quadrinhos (ou pasta) no seu sistema e inicie a conversão
 ![tela principal do comics2video](./docs/images/comics2video_2-1-0_pt.png)
 
 ## Uso para Desenvolvedores

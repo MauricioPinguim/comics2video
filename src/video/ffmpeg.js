@@ -38,18 +38,31 @@ const generatePageTransition = async (processData, from, to, transition) => {
 
 const joinVideos = async (processData, joinFile) => {
     const { file, filePart } = processData.getCurrentData();
-    const output1 = path.join(file.tempFolders.videoJoin, `${filePart.outputFile}_TMP.mp4`);
-    const output2 = path.join(file.destinationFolder, `${filePart.outputFile}.mp4`);
+    const fileFirstStep = path.join(file.tempFolders.videoJoin, `${filePart.outputFile}_TMP.mp4`);
+    const fileFinalStep = path.join(file.destinationFolder, `${filePart.outputFile}.mp4`);
+    let output1, output2;
+
+    // The first step joins the video parts. The second step adjusts the bitrate and adds a silent sound track to avoid a warning message in some video players
+    // The second step will be skipped in macOS because Apple Quicktime doesn't open the file after that processing
+
+    if (process.platform !== 'darwin') {
+        output1 = fileFirstStep;
+        output2 = fileFinalStep;
+    } else {
+        output1 = fileFinalStep;
+    }
 
     let paramArray = ['-f', 'concat', '-safe', '0', '-i', joinFile, '-c', 'copy', '-y', output1];
     await spawn(ffmpegFullPath, paramArray);
 
-    // Convert to final video specs and disable audio track
-    const videoQuality = `${params.systemParams.videoQualityMBPS}M`;
-    paramArray = ['-f', 'lavfi', '-i', 'anullsrc', '-i', output1, '-c:v', 'copy', '-c:a', 'aac', '-map', '0:a', '-map', '1:v', '-shortest', '-b:v', videoQuality, '-maxrate', videoQuality, '-minrate', videoQuality, '-y', output2];
-    await spawn(ffmpegFullPath, paramArray);
+    if (process.platform !== 'darwin') {
+        // Convert to final video specs and disable audio track
+        const videoQuality = `${params.systemParams.videoQualityMBPS}M`;
+        paramArray = ['-f', 'lavfi', '-i', 'anullsrc', '-i', output1, '-c:v', 'copy', '-c:a', 'aac', '-map', '0:a', '-map', '1:v', '-shortest', '-b:v', videoQuality, '-maxrate', videoQuality, '-minrate', videoQuality, '-y', output2];
+        await spawn(ffmpegFullPath, paramArray);
+    }
 
-    filePart.videoDestinationFile = path.resolve(output2);
+    filePart.videoDestinationFile = path.resolve(fileFinalStep);
 };
 
 module.exports = {

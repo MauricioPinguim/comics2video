@@ -153,7 +153,7 @@ const addCoverPages = (filePart) => {
 
     let coverSubtitle;
     if (filePart.isMultiPart) {
-        coverSubtitle = `${filePart.partTitle} (${message('pages')} ${filePart.firstPage} ${message('pages_to')} ${filePart.lastPage})`;
+        coverSubtitle = `${filePart.partTitle} (${message('pages_from')} ${filePart.firstPage} ${message('pages_to')} ${filePart.lastPage})`;
     } else {
         let pageLabel;
         if (filePart.pages.length > 1) {
