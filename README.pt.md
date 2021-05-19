@@ -33,7 +33,6 @@ Amostra de Vídeo gerado<br/>
 ### Tela principal do comics2video
 Use os botões para selecionar um arquivo de História em Quadrinhos (ou pasta) no seu sistema e inicie a conversão
 ![tela principal do comics2video](./docs/images/comics2video_2-1-0_pt.png)
-
 ## Uso para Desenvolvedores
 
 ### Código-fonte em Node.js
@@ -108,7 +107,7 @@ Após cada processamento, uma pasta será criada com o mesmo nome do arquivo da 
 Extração de arquivos CBR/RAR: [unrar-promise](https://www.npmjs.com/package/unrar-promise), arquivos CBZ/ZIP: [win-7zip](https://www.npmjs.com/package/win-7zip)+[cross-zip](https://www.npmjs.com/package/cross-unzip), Processamento de Imagens: [sharp](https://www.npmjs.com/package/sharp), OCR: [tesseract.js](https://www.npmjs.com/package/tesseract.js), Geração de Vídeo: [ffmpeg-static](https://www.npmjs.com/package/ffmpeg-static), Interface Gráfica: [electron](https://www.npmjs.com/package/electron)+[photonkit](https://www.npmjs.com/package/photonkit)
 
 ### Próximos passos
-- Tradução da Interface Gráfica e documentação para outros idiomas além de Inglês e Português (precisamos de ajuda nisso!)
+- Tradução da Interface Gráfica e documentação para **Espanhol** e outros idiomas além de Inglês e Português (precisamos de ajuda nisso!)
 - Qualquer outra boa sugestão que você queira compartilhar :wink:
 
 ### Contato
