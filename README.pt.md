@@ -3,14 +3,14 @@ Converte arquivos de História em Quadrinhos em Vídeos, para serem visualizados
 
 Ler História em Quadrinhos por meio de vídeos permite que o usuário fique com as mãos livres, pois não há a necessidade de segurar um celular ou pressionar nenhum botão/tela para mudar de página, além de permitir a utilização por pessoas com **deficiência/paralisia**.
 
-> Documentation: ![USA Flag](./docs/images/flag_united_states.png) ![United Kingdom Flag](./docs/images/flag_united_kingdom.png) [English](https://github.com/MauricioPinguim/comics2video#readme) | ![Brazil Flag](./docs/images/flag_brazil.png) [Português - Brasil](https://github.com/MauricioPinguim/comics2video/blob/master/README.pt.md)
+> Documentação em: ![USA Flag](./docs/images/flag_united_states.png) ![United Kingdom Flag](./docs/images/flag_united_kingdom.png) [English](https://github.com/MauricioPinguim/comics2video#readme) | ![Brazil Flag](./docs/images/flag_brazil.png) [Português - Brasil](https://github.com/MauricioPinguim/comics2video/blob/master/README.pt.md)
 
 ### Como funciona
 Exemplo utilizando "Whiz Comics #34 (1942) - Fawcett Publications" (Domínio Público)
 
-![Como comics2video funciona](./docs/images/comics2video.jpg)
+![Como comics2video funciona](./docs/images/comics2video_pt.jpg)
 Amostra de Vídeo gerado<br/>
-![Amostra - Vídeo gerado com comics2video](./docs/images/comics2video.gif)
+![Amostra - Vídeo gerado com comics2video](./docs/images/comics2video_pt.gif)
 
 ## Uso recomendado: Arquivo executável pronto para rodar
 
@@ -32,7 +32,7 @@ Amostra de Vídeo gerado<br/>
 
 ### Tela principal do comics2video
 Use os botões para selecionar um arquivo de História em Quadrinhos (ou pasta) no seu sistema e inicie a conversão
-![tela principal do comics2video](./docs/images/comics2video_2-1-0_pt.png)
+![tela principal do comics2video](./docs/images/comics2video_pt.png)
 ## Uso para Desenvolvedores
 
 ### Código-fonte em Node.js
