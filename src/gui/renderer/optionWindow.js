@@ -16,15 +16,17 @@ const setMessage = (elementId, messageId) => {
 const parameters = [
     { name: 'GenerateVideo', options: ['Yes', 'No'], descriptions: [message('generate_video_yes'), message('generate_video_no')] },
     { name: 'ContentProfile', options: ['Complex', 'Simple'], descriptions: [message('content_profile_complex'), message('content_profile_simple')] },
-    { name: 'ReadingSpeed', options: ['Slow', 'Normal', 'Fast'], descriptions: [message('reading_speed_slow'), message('reading_speed_normal'), message('reading_speed_fast')] }
+    { name: 'ReadingSpeed', options: ['Slow', 'Normal', 'Fast'], descriptions: [message('reading_speed_slow'), message('reading_speed_normal'), message('reading_speed_fast')] },
+    { name: 'CoverPageProcessing', options: ['Thumbnail', 'NormalPage', 'Both'], descriptions: [message('cover_page_thumbnail'), message('cover_page_normal_page'), message('cover_page_both')] }
 ];
 
-const { userParams, contentProfiles, readingSpeeds } = ipcRenderer.sendSync('getUserParams');
+const { userParams, contentProfiles, readingSpeeds, coverPageProcessing } = ipcRenderer.sendSync('getUserParams');
 
 const setUserParams = () => {
     userParams.generateVideo = parameters[0].selectedIndex === 0;
     userParams.contentProfile = parameters[1].selectedIndex === 0 ? contentProfiles.complexContent : contentProfiles.simpleContent;
     userParams.readingSpeed = parameters[2].selectedIndex === 0 ? readingSpeeds.slow : parameters[2].selectedIndex === 1 ? readingSpeeds.normal : readingSpeeds.fast;
+    userParams.coverPageProcessing = parameters[3].selectedIndex === 0 ? coverPageProcessing.thumbnailPage : parameters[3].selectedIndex === 1 ? coverPageProcessing.normalPage : coverPageProcessing.thumbnailAndNormalPage;
 
     ipcRenderer.send('setUserParams', userParams);
 }
@@ -57,6 +59,7 @@ const showParams = () => {
     setOption(parameters[0], userParams.generateVideo ? 0 : 1);
     setOption(parameters[1], userParams.contentProfile.name === contentProfiles.complexContent.name ? 0 : 1);
     setOption(parameters[2], userParams.readingSpeed.name === readingSpeeds.slow.name ? 0 : userParams.readingSpeed.name === readingSpeeds.normal.name ? 1 : 2);
+    setOption(parameters[3], userParams.coverPageProcessing.name === coverPageProcessing.thumbnailPage.name ? 0 : userParams.coverPageProcessing.name === coverPageProcessing.normalPage.name ? 1 : 2);
 }
 
 const checkShortcutKeys = (e) => {
@@ -80,6 +83,12 @@ const setMessages = () => {
     setMessage('lblSlow', 'slow');
     setMessage('lblNormal', 'normal');
     setMessage('lblFast', 'fast');
+
+    setMessage('lblCoverPageProcessingLabel', 'cover_page');
+    setMessage('lblThumbnail', 'thumbnail');
+    setMessage('lblNormalPage', 'normal_page');
+    setMessage('lblBoth', 'both');
+
     setMessage('lblOK', 'ok');
     setMessage('lblCancel', 'cancel');
 }
@@ -98,6 +107,9 @@ const prepareWindow = () => {
     element('btnSlow').addEventListener('click', () => setOption(parameters[2], 0));
     element('btnNormal').addEventListener('click', () => setOption(parameters[2], 1));
     element('btnFast').addEventListener('click', () => setOption(parameters[2], 2));
+    element('btnThumbnail').addEventListener('click', () => setOption(parameters[3], 0));
+    element('btnNormalPage').addEventListener('click', () => setOption(parameters[3], 1));
+    element('btnBoth').addEventListener('click', () => setOption(parameters[3], 2));
     document.onkeydown = (e) => checkShortcutKeys(e);
 }
 

@@ -6,7 +6,8 @@ const message = require('../messages/message');
 
 const fileExtensions = {
     ZIP: ['.cbz', '.zip'],
-    RAR: ['.cbr', '.rar']
+    RAR: ['.cbr', '.rar'],
+    PDF: ['.pdf']
 }
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.png'];
 
@@ -42,6 +43,8 @@ const isZIP = (file) => fileExtensions.ZIP.includes(getFileExtension(file));
 
 const isRAR = (file) => fileExtensions.RAR.includes(getFileExtension(file));
 
+const isPDF = (file) => fileExtensions.PDF.includes(getFileExtension(file));
+
 const removeFolder = (path) => {
     try {
         deltree(path);
@@ -65,7 +68,10 @@ const getImagesFiles = (sourceFolder) => {
 const isSourceExtensionValid = (processData, fileName) => {
     const extension = getFileExtension(fileName);
 
-    if (isZIP(fileName) || isRAR(fileName)) {
+    // PDF conversion will work only in Windows
+    const isFilePDF = process.platform === 'win32' ? isPDF(fileName) : false;
+
+    if (isZIP(fileName) || isRAR(fileName) || isFilePDF) {
         return true;
     }
 }
@@ -73,7 +79,10 @@ const isSourceExtensionValid = (processData, fileName) => {
 const isSelectedFileValid = (fileName) => {
     const extension = getFileExtension(fileName);
 
-    if (isZIP(fileName) || isRAR(fileName)) {
+    // PDF conversion will work only in Windows
+    const isFilePDF = process.platform === 'win32' ? isPDF(fileName) : false;
+
+    if (isZIP(fileName) || isRAR(fileName) || isFilePDF) {
         return true;
     }
 }
@@ -127,7 +136,7 @@ const tryFindSubFolder = (folder) => {
 }
 
 const replaceInvalidCharacters = (fileName) => {
-    const invalidCharacters = '&?/\\|<>:*"';
+    const invalidCharacters = '&?/\\|<>:;*`\'"';
     const replacement = '_';
 
     return fileName
@@ -230,6 +239,7 @@ module.exports = {
     tryFindSubFolder,
     isZIP,
     isRAR,
+    isPDF,
     isFile,
     getImagesFiles,
     prepareImageDestinationFolder,

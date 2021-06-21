@@ -1,5 +1,5 @@
 const { app, ipcMain } = require('electron');
-const { userParams, contentProfiles, readingSpeeds } = require('../params');
+const { userParams, contentProfiles, readingSpeeds, coverPageProcessing } = require('../params');
 const Comics2video = require('../classes/Comics2video');
 const message = require('../messages/message');
 const log = require('../terminal/basicLog');
@@ -7,11 +7,11 @@ const log = require('../terminal/basicLog');
 const isMac = process.platform === 'darwin';
 const isWindows = process.platform === 'win32';
 // Electron may not be able to get version directly from package.json
-const appVersion = '2.1.1';
+const appVersion = '2.2.0';
 
 const checkPlatform = () => {
     if (!isWindows && !isMac) {
-        // In Linux, some modules used by comics2video don't work properly inside a Electron App
+        // In Linux, some modules used by comics2video don't work properly inside an Electron App
         log('\nWarning: The Electron GUI for comics2video is compatible only with Windows and macOS\n');
         process.exit(0);
     }
@@ -63,7 +63,8 @@ ipcMain.on('getUserParams', async (e) => {
     e.returnValue = {
         userParams,
         contentProfiles,
-        readingSpeeds
+        readingSpeeds,
+        coverPageProcessing
     }
 });
 
@@ -71,6 +72,7 @@ ipcMain.on('setUserParams', async (e, values) => {
     userParams.generateVideo = values.generateVideo;
     userParams.contentProfile = values.contentProfile;
     userParams.readingSpeed = values.readingSpeed;
+    userParams.coverPageProcessing = values.coverPageProcessing;
 });
 
 ipcMain.on('getMessage', async (e, messageId) => {

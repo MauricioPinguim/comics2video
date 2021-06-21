@@ -16,14 +16,14 @@ Amostra de Vídeo gerado<br/>
 
 ### Para Windows
 1. Faça o download do arquivo:
-	- [comics2video 2.1.1 para Windows](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_windows_latest.zip)
+	- [comics2video 2.2.0 para Windows](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_windows_latest.zip)
 2. Descompacte o arquivo baixado e abra o executável:
 ![executável do comics2video](./docs/images/comics2video_executable_small.png)
 
 ### Para macOS:
 > Por ser baixado do GitHub e não da Apple Store, siga todos os passos abaixo antes de usar o comics2video pela primeira vez
 1. Faça o download do arquivo:
-	- [comics2video 2.1.1 para macOS](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_macOS_latest.zip)
+	- [comics2video 2.2.0 para macOS](https://github.com/MauricioPinguim/comics2video/releases/latest/download/comics2video_macOS_latest.zip)
 2. Descompacte o arquivo baixado
 3. Clique com o botão direito no arquivo  **comics2video_Prepare_First_Execution** e escolha "Abrir" no submenu
 4. Confirme a abertura do arquivo. Um script será executado e mostrará a mensagem "Done"
@@ -89,10 +89,11 @@ Campos da estrutrura userParameters (todos opcionais):
 
 | Nome | Como definir | Valor padrão | Descrição |
 | --- | --- | --- | --- |
-| generateVideo | boolean | true | Se igual a false, apenas Imagens serão geradas |
-| contentProfile | string:<br/>'simple', 'complex' | 'complex' | Muda a forma com a qual o OCR determina o tempo de duração de cada frame:<br/>• 'simple' : Para HQ infantil, arte com pouco detalhe<br />• 'complex' : Para HQ de Heróis, arte com bastante detalhe |
-| readingSpeed | string:<br/> 'slow', 'normal', 'fast' | 'normal' | Também influencia o cálculo dos tempos de duração:<br/>• 'slow' : Para crianças, ou leitura em outro idioma<br />• 'normal' : Velocidade normal de leitura<br />• 'fast' : Leitura dinâmica |
-| messageLanguage | string:<br/> 'en', 'pt' | 'en' | Idioma da Interface Gráfica e alguns elementos:<br />• 'en' : Inglês<br />• 'pt' : Português (Brasil) |
+| generateVideo | *boolean* | true | Se igual a false, apenas Imagens serão geradas |
+| contentProfile | *string:*<br/>'simple', <br/>'complex' | 'complex' | Muda a forma com a qual o OCR determina o tempo de duração de cada frame:<br/>• 'simple' : Para HQ infantil, arte com pouco detalhe<br />• 'complex' : Para HQ de Heróis, arte com bastante detalhe |
+| readingSpeed | *string:*<br/> 'slow', <br/>'normal', <br/>'fast' | 'normal' | Também influencia o cálculo dos tempos de duração:<br/>• 'slow' : Para crianças, ou leitura em outro idioma<br />• 'normal' : Velocidade normal de leitura<br />• 'fast' : Leitura dinâmica |
+| coverPageProcessing | *string:*<br/> 'thumbnailPage', <br/>'normalPage', <br/>'thumbnailAndNormalPage' | 'thumbnailPage' | Processar Página de Capa como:<br/>• 'thumbnailPage' : Capa será mostrada como uma miniatura<br />• 'normalPage' : Capa será mostrada como página normal<br />• 'thumbnailAndNormalPage' : Capa como miniatura e página normal |
+| messageLanguage | *string:*<br/> 'en', <br/>'pt' | 'en' | Idioma da Interface Gráfica e alguns elementos:<br />• 'en' : Inglês<br />• 'pt' : Português (Brasil) |
 
 ## Usando os arquivos gerados
 Após cada processamento, uma pasta será criada com o mesmo nome do arquivo da HQ, contendo:
@@ -104,7 +105,7 @@ Após cada processamento, uma pasta será criada com o mesmo nome do arquivo da 
 ## Projeto comics2video
 
 ### Dependências do Código-Fonte
-Extração de arquivos CBR/RAR: [unrar-promise](https://www.npmjs.com/package/unrar-promise), arquivos CBZ/ZIP: [win-7zip](https://www.npmjs.com/package/win-7zip)+[cross-zip](https://www.npmjs.com/package/cross-unzip), Processamento de Imagens: [sharp](https://www.npmjs.com/package/sharp), OCR: [tesseract.js](https://www.npmjs.com/package/tesseract.js), Geração de Vídeo: [ffmpeg-static](https://www.npmjs.com/package/ffmpeg-static), Interface Gráfica: [electron](https://www.npmjs.com/package/electron)+[photonkit](https://www.npmjs.com/package/photonkit)
+Extração de arquivos CBR/RAR: [unrar-promise](https://www.npmjs.com/package/unrar-promise), arquivos CBZ/ZIP: [win-7zip](https://www.npmjs.com/package/win-7zip)+[cross-zip](https://www.npmjs.com/package/cross-unzip), arquivos PDF (Windows): [node-poppler](https://www.npmjs.com/package/node-poppler), Processamento de Imagens: [sharp](https://www.npmjs.com/package/sharp), OCR: [tesseract.js](https://www.npmjs.com/package/tesseract.js), Geração de Vídeo: [ffmpeg-static](https://www.npmjs.com/package/ffmpeg-static), Interface Gráfica: [electron](https://www.npmjs.com/package/electron)+[photonkit](https://www.npmjs.com/package/photonkit)
 
 ### Próximos passos
 - Tradução da Interface Gráfica e documentação para **Espanhol** e outros idiomas além de Inglês e Português (precisamos de ajuda nisso!)

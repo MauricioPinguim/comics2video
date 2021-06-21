@@ -39,6 +39,18 @@ const readingSpeeds = {
     }
 }
 
+const coverPageProcessing = {
+    thumbnailPage: {
+        name: 'thumbnailPage',
+    },
+    normalPage: {
+        name: 'normalPage',
+    },
+    thumbnailAndNormalPage: {
+        name: 'thumbnailAndNormalPage',
+    }
+}
+
 const systemParams = {
     screenWidth: width,
     screenHeight: height,
@@ -49,7 +61,6 @@ const systemParams = {
     ocrResizeRatio: .65,
     coverDuration: 10,
     pagesPerFilePart: 30,
-    skipFrontCover: false,
     jpegOutputQuality: 50,
     jpegOCROutputQuality: 80,
     videoFrameRate: 8,
@@ -63,6 +74,7 @@ const userParams = {
     generateVideo: true,
     contentProfile: contentProfiles.complexContent,
     readingSpeed: readingSpeeds.normal,
+    coverPageProcessing: coverPageProcessing.thumbnailPage,
     messageLanguage: 'en'
 }
 
@@ -109,6 +121,21 @@ const setReadingSpeed = (readingSpeed) => {
     }
 }
 
+const setCoverPageProcessing = (coverPageProcessingValue) => {
+    for (const option of Object.values(coverPageProcessing)) {
+        if (coverPageProcessingValue === option) {
+            userParams.coverPageProcessing = option;
+            return;
+        }
+        if (typeof coverPageProcessingValue === 'string') {
+            if (coverPageProcessingValue.trim().toLowerCase() === option.name) {
+                userParams.coverPageProcessing = option;
+                return;
+            }
+        }
+    }
+}
+
 const setMessageLanguage = (messageLanguage) => {
     if (messageLanguage) {
         userParams.messageLanguage = messageLanguage.trim();
@@ -124,11 +151,13 @@ const setParamValues = (paramValues) => {
     setContentProfile(paramValues.contentProfile);
     setReadingSpeed(paramValues.readingSpeed);
     setMessageLanguage(paramValues.messageLanguage);
+    setCoverPageProcessing(paramValues.coverPageProcessing)
 }
 
 module.exports = {
     contentProfiles,
     readingSpeeds,
+    coverPageProcessing,
     userParams,
     systemParams,
     setParamValues

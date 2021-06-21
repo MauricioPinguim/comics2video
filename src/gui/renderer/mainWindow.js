@@ -52,12 +52,18 @@ const setButtonsEnabled = (enabled) => {
 
 const getFileFolderSelection = (title, dialogStyle) => {
     const filterName = message('comics_books');
+
+    const extensions = ['cbr', 'cbz', 'pdf', 'rar', 'zip'];
+    if (process.platform !== 'win32') {
+        // Due to compatibility issues, remove PDF option if not in Windows
+        extensions.splice(2, 1);
+    }
     
     let selection = dialog.showOpenDialogSync(currentWindow, {
         title: title,
         properties: [dialogStyle],
         filters: [
-            { name: filterName, extensions: ['cbr', 'cbz', 'rar', 'zip'] }
+            { name: filterName, extensions }
         ]
     })
 

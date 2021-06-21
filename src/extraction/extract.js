@@ -15,6 +15,9 @@ const extractFile = async (processData) => {
             await extractZIP.extract(file);
         } else if (filedir.isRAR(file.source)) {
             await extractRAR.extract(file);
+        } else {
+            // require() cannot be at the beginning because PDF extraction will be installed only in Windows
+            await require('./extractPDF').extract(file);
         }
 
         file.tempFolders.pages = filedir.tryFindSubFolder(file.tempFolders.pages);

@@ -164,7 +164,11 @@ const addCoverPages = (filePart) => {
         coverSubtitle = `${filePart.pages.length} ${pageLabel}`;
     }
 
-    if (!params.systemParams.skipFrontCover) {
+    if (params.userParams.coverPageProcessing.name === params.coverPageProcessing.thumbnailPage.name && filePart.partNumber === 1) {
+        filePart.pages.splice(0, 1);
+    }
+
+    if (params.userParams.coverPageProcessing.name !== params.coverPageProcessing.normalPage.name) {
         filePart.pages.unshift(
             newCoverPage({
                 number: firstPage.number,

@@ -60,7 +60,7 @@ function createMainWindow() {
 
 function showOptionWindow() {
     optionWindow = new BrowserWindow({
-        width: 600, height: 285,
+        width: 620, height: 345,
         center: true,
         resizable: false, minimizable: false, maximizable: false,
         parent: mainWindow, modal: true, show: false,
